@@ -3,18 +3,17 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 http.createServer((req,res)=>{
-  const museumFiles = ['index.html','audio.js','interludes.js','game.js','exploration.js','snake.js','cutscenes.js','styles.css'];
-  const files = Object.fromEntries(museumFiles.map(file=>['/games/midnight-museum/'+file,'games/midnight-museum/'+file]));
-  files['/games/midnight-museum/']='games/midnight-museum/index.html';
-  files['/']=files['/index.html']='index.html';
-  for(const file of ['styles.css','catalogue.js','hub.js','assets/favicon.svg','assets/midnight-museum.svg'])files['/'+file]=file;
   // Serve the deployment prefix too, so tests exercise real GitHub Pages paths.
-  const pathname=req.url?.split('?')[0].replace(/^\/mis-class-games(?=\/)/,'');
-  const file = files[pathname];
-  if(!file || !fs.existsSync(path.join(root,file))) {res.writeHead(404);return res.end();}
-  const types={'.js':'text/javascript','.css':'text/css','.html':'text/html','.svg':'image/svg+xml'};
-  res.setHeader('Content-Type',types[path.extname(file)]);
-  const data=fs.readFileSync(path.join(root,file));
+  let pathname;
+  try{pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\/mis-class-games(?=\/)/,'');}
+  catch{res.writeHead(400);return res.end();}
+  const file=path.resolve(root,'.'+pathname,pathname.endsWith('/')?'index.html':'');
+  const relative=path.relative(root,file).split(path.sep).join('/');
+  const allowed=['index.html','styles.css','catalogue.js','hub.js'].includes(relative)||/^(games|assets)\//.test(relative);
+  if(!allowed || !fs.existsSync(file) || !fs.statSync(file).isFile()) {res.writeHead(404);return res.end();}
+  const types={'.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
+  res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');
+  const data=fs.readFileSync(file);
   res.setHeader('Accept-Ranges','bytes');
   const range=req.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
   if(range){const start=Number(range[1]),end=range[2]?Math.min(Number(range[2]),data.length-1):data.length-1;if(start>end){res.writeHead(416);return res.end();}res.writeHead(206,{'Content-Range':`bytes ${start}-${end}/${data.length}`,'Content-Length':end-start+1});return res.end(data.subarray(start,end+1));}
