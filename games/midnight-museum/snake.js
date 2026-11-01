@@ -38,11 +38,11 @@ const Snake = (() => {
   function draw(progress=1) {
     const canvas=document.getElementById('snakeCanvas');if(!canvas)return;
     const ctx=canvas.getContext('2d'),cell=canvas.width/SIZE;
-    ctx.fillStyle='#120e22';ctx.fillRect(0,0,400,400);
-    ctx.strokeStyle='#322641';
+    ctx.fillStyle='#19283a';ctx.fillRect(0,0,400,400);
+    ctx.strokeStyle='#40536b';
     for(let i=0;i<=SIZE;i++){ctx.beginPath();ctx.moveTo(i*cell,0);ctx.lineTo(i*cell,400);ctx.moveTo(0,i*cell);ctx.lineTo(400,i*cell);ctx.stroke();}
-    ctx.fillStyle='#ffbb6d';ctx.beginPath();ctx.arc((state.food.x+.5)*cell,(state.food.y+.5)*cell,cell*.27,0,Math.PI*2);ctx.fill();
-    state.body.forEach((p,i)=>{const from=previousBody[i]||p;ctx.fillStyle=i===0?'#ffffff':'#90e5c4';ctx.fillRect((from.x+(p.x-from.x)*progress)*cell+3,(from.y+(p.y-from.y)*progress)*cell+3,cell-6,cell-6);});
+    ctx.fillStyle='#f2a444';ctx.beginPath();ctx.arc((state.food.x+.5)*cell,(state.food.y+.5)*cell,cell*.27,0,Math.PI*2);ctx.fill();
+    state.body.forEach((p,i)=>{const from=previousBody[i]||p;ctx.fillStyle=i===0?'#f7f3e8':'#72b8a5';ctx.fillRect((from.x+(p.x-from.x)*progress)*cell+3,(from.y+(p.y-from.y)*progress)*cell+3,cell-6,cell-6);});
   }
   function updateControls() {
     document.getElementById('playerOne').textContent=`Player 1 · ${state.cleared[0]} / 10 levels`;

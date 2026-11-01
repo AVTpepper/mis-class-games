@@ -1,6 +1,6 @@
 /* Short, optional changes of pace. They never cost lives or award code digits. */
 const Interludes=(()=>{
-  const labels=['Moon','Star','Pumpkin','Ghost','Bat','Spider'],symbols=['☾','★','🎃','👻','🦇','🕷️'];
+  const labels=['Moon','Star','Pumpkin','Ghost','Bat','Spider'],symbols=['moon','star','pumpkin','ghost','bat','spider'];
   const fresh=()=>({pending:null,completed:[],cards:[0,1,2,1,0,2,3,4,5,3,4,5],matched:[],open:[],moves:0,caught:0});
   let state=fresh(),frame=null,beam={x:50,y:50},target={x:50,y:50},bug={x:25,y:25},lastFrame=0,manual=false;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
@@ -31,9 +31,9 @@ const Interludes=(()=>{
     document.getElementById('breakStatus').textContent=done?'Break complete! Continue your rescue.':memory?`${state.matched.length} / ${labels.length} pairs found · ${state.moves} turns`:`${state.caught} / 5 fireflies caught`;
     const host=document.getElementById('breakGame');
     if(memory){
-      host.innerHTML=`<div class="lantern-grid">${state.cards.map((value,i)=>{const matched=state.matched.includes(value),visible=matched||state.open.includes(i);return `<button class="lantern-card ${visible?'revealed':''}" aria-label="Lantern ${i+1}${visible?`: ${labels[value]}`:''}" aria-pressed="${visible}" ${matched?'disabled':''} onclick="Interludes.flip(${i})"><span aria-hidden="true">${visible?symbols[value]:'?'}</span><small>${matched?'Pair found':visible?labels[value]:'Turn over'}</small></button>`;}).join('')}</div>`;
+      host.innerHTML=`<div class="lantern-grid">${state.cards.map((value,i)=>{const matched=state.matched.includes(value),visible=matched||state.open.includes(i);return `<button class="lantern-card ${visible?'revealed':''}" aria-label="Lantern ${i+1}${visible?`: ${labels[value]}`:''}" aria-pressed="${visible}" ${matched?'disabled':''} onclick="Interludes.flip(${i})"><span aria-hidden="true">${MuseumArt.icon(visible?symbols[value]:'key')}</span><small>${matched?'Pair found':visible?labels[value]:'Turn over'}</small></button>`;}).join('')}</div>`;
     }else{
-      host.innerHTML=done?'<div class="firefly-finished" aria-hidden="true">✦ ✦ ✦ ✦ ✦</div>':`<div class="firefly-field" tabindex="0" role="group" aria-label="Flashlight corridor" aria-describedby="breakInstructions beamStatus"><span id="beamStatus" class="beam-status" role="status"></span><button id="firefly" disabled aria-label="Catch firefly ${state.caught+1}" onclick="Interludes.catchOne()">✦</button></div>`;
+      host.innerHTML=done?'<div class="firefly-finished" aria-hidden="true">'+MuseumArt.icon('firefly').repeat(5)+'</div>':`<div class="firefly-field" tabindex="0" role="group" aria-label="Flashlight corridor" aria-describedby="breakInstructions beamStatus"><span id="beamStatus" class="beam-status" role="status"></span><button id="firefly" disabled aria-label="Catch firefly ${state.caught+1}" onclick="Interludes.catchOne()">${MuseumArt.icon('firefly')}</button></div>`;
       if(!done)mountBeam();
     }
     document.getElementById('breakContinue').disabled=!done;

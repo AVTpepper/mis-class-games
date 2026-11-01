@@ -25,7 +25,7 @@ const Cutscene=(()=>{
     returnFocus=document.activeElement;
     document.getElementById('cutsceneTitle').textContent=story[0];
     document.getElementById('cutsceneStory').textContent=story[1];
-    document.getElementById('cutsceneSymbol').textContent=story[2];
+    document.getElementById('cutsceneSymbol').innerHTML=MuseumArt.icon(['clock','flask','frame','robot','letter','cabinet','frame','ghost'][stage]);
     document.getElementById('cutsceneChapter').textContent=stage===0?'Your rescue begins':stage===7?'Mission complete':`Room ${stage} cleared · digit ${rooms[stage-1].digit} recovered`;
     dialog.dataset.stage=String(stage);
     dialog.showModal();
