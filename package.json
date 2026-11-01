@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "render:art": "node scripts/render-art.cjs",
     "test": "playwright test"
   },
   "devDependencies": {

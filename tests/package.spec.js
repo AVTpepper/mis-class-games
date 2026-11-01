@@ -17,6 +17,13 @@ test('the packaged ZIP opens offline and links between the hub and museum',async
   ],{env:archiveEnv,encoding:'utf8'}));
   expect(entries).toContain('games/midnight-museum/index.html');
   expect(entries).toContain('assets/midnight-museum.svg');
+  expect(entries).toContain('assets/theme.css');
+  expect(entries).toContain('assets/museum-art.js');
+  expect(entries).toContain('assets/fonts/dm-sans-latin.woff2');
+  expect(entries).toContain('assets/fonts/fraunces-latin.woff2');
+  expect(entries).toContain('assets/fonts/dm-sans-OFL.txt');
+  expect(entries).toContain('assets/fonts/fraunces-OFL.txt');
+  expect(entries).toContain('docs/design-system.md');
   expect(entries.some(entry=>entry.includes('\\'))).toBe(false);
   const extracted=fs.mkdtempSync(path.join(root,'artifacts','offline-'));
   execFileSync('powershell.exe',['-NoProfile','-Command','Expand-Archive -LiteralPath $env:MIS_TEST_ARCHIVE -DestinationPath $env:MIS_TEST_EXTRACTED'],{
@@ -24,6 +31,8 @@ test('the packaged ZIP opens offline and links between the hub and museum',async
   });
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto(pathToFileURL(path.join(extracted,'index.html')).href);
+  await page.evaluate(()=>document.fonts.ready);
+  expect(await page.evaluate(()=>document.fonts.check('600 30px Fraunces')&&document.fonts.check('400 16px "DM Sans"'))).toBe(true);
   await expect(page.getByRole('heading',{name:'Choose your next adventure.'})).toBeVisible();
   await expect(page.locator('.game-card')).toHaveCount(1);
   expect(await page.locator('.game-art img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);

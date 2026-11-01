@@ -6,6 +6,7 @@ A playful, English-language library of games and learning activities for PYP 6. 
 - Repository: https://github.com/AVTpepper/mis-class-games
 - Museum: https://avtpepper.github.io/mis-class-games/games/midnight-museum/
 - [Museum classroom guide, teacher notes and answers](games/midnight-museum/README.md)
+- [Design system, artwork and layout conventions](docs/design-system.md)
 
 ## Playing and local preview
 
@@ -26,7 +27,9 @@ The museum keeps its existing browser save keys, so progress from the old websit
 3. Give the activity an **All games** link to `../../index.html`. Keep navigation and assets relative so the site works under the repository prefix and from an extracted ZIP. Namespace new save keys by activity; leave the museum's existing keys unchanged.
 4. Preview and test the activity, then commit and push. The catalogue renders its card automatically; deployment and packaging already include all files inside `games/` and `assets/`.
 
-`hub.js` renders cards using the template in the root `index.html`. The root `styles.css` controls the year-round hub. Files inside `games/midnight-museum/` belong to the museum and preserve its Halloween appearance and code-gated Teacher room. That teacher gate is a classroom convenience; it is not secure authentication.
+`hub.js` renders cards using the template in the root `index.html`. The root `styles.css` controls the year-round hub. `assets/theme.css` provides the shared Fraunces/DM Sans typography and playground palette; `assets/museum-art.js` provides original SVG artwork. Fonts and their licences are stored locally, so playing does not contact a font service. Use `npm run render:art` after changing the cover's source artwork.
+
+Files inside `games/midnight-museum/` belong to the museum, with navy illustrated rooms, readable cream puzzle panels and a code-gated Teacher room. Long activities use normal page scrolling on short screens. That teacher gate is a classroom convenience; it is not secure authentication.
 
 ## Verification
 
@@ -37,7 +40,7 @@ npm ci
 npm test
 ```
 
-Playwright checks the museum's complete rescue, puzzles, Snake, lives, timer, saves, teacher test tabs and layouts, plus hub navigation, keyboard use, responsive cards, catalogue expansion, old saves and repository-prefixed URLs. On Windows it also creates and extracts the offline ZIP and plays through its hub-to-museum navigation in the browser.
+Playwright checks the museum's complete rescue, puzzles, Snake, lives, timer, saves, teacher test tabs and layouts, plus hub navigation, keyboard use, responsive exhibits, text contrast, touch targets, local fonts, reduced motion, catalogue expansion, old saves and repository-prefixed URLs. The first adventure and its play action must be visible in the initial viewport on a short Chromebook and a phone. On Windows the tests also create and extract the offline ZIP and play through its hub-to-museum navigation with local fonts.
 
 ## GitHub Pages
 

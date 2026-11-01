@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $outputDirectory = Join-Path $projectRoot 'artifacts'
 New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
-$sourceFiles = @('index.html', 'styles.css', 'catalogue.js', 'hub.js', 'assets', 'games', 'README.md') | ForEach-Object { Join-Path $projectRoot $_ }
+$sourceFiles = @('index.html', 'styles.css', 'catalogue.js', 'hub.js', 'assets', 'games', 'docs', 'README.md') | ForEach-Object { Join-Path $projectRoot $_ }
 $archivePath = Join-Path $outputDirectory 'mis-class-games.zip'
 Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
 $archiveStream = [System.IO.File]::Open($archivePath, [System.IO.FileMode]::Create)
