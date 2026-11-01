@@ -83,6 +83,8 @@ input[aria-invalid=true] { border: 2px solid var(--error-ink); }
 .lock-question + .lock-question { padding-left: 24px; border-left: 1px solid var(--rule); }
 .multiples-workspace h3 { font-size: 21px; }
 .poem { padding: 18px; background: var(--paper); border-left: 3px solid var(--mint); font-family: var(--font-heading); font-size: 17px; line-height: 1.9; }
+.poem-line { display: block; padding-left: 16px; text-indent: -16px; }
+.poem-line + .poem-line { margin-top: 8px; }
 .evidence { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .tile { display: flex; align-items: center; justify-content: center; gap: 8px; flex-direction: column; min-width: 0; padding: 12px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; text-align: center; }
 .tile .art-icon { width: 48px; height: 50px; }
@@ -293,7 +295,8 @@ dialog::backdrop { background: #19283ad9; }
   body.playing .wrap { display: block; padding: 12px; }
   body.playing .room { min-height: calc(100dvh - 76px); padding: 20px; }
   body.playing .game-toolbar { display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 20; padding: 8px 0 12px; color: var(--cream); background: var(--night); font-size: 12px; }
-  .game-toolbar .mini { padding: 8px; min-height: 40px; font-size: 12px; }
+  .game-toolbar .mini { padding: 8px; min-height: 44px; font-size: 12px; }
+  .mini, body.playing .game-sidebar button { min-height: 44px; }
   .toolbar-exit { color: var(--cream); font-size: 12px; white-space: nowrap; }
   #mobileLives { margin-left: auto; white-space: nowrap; }
   #mobileClock { white-space: nowrap; }
@@ -334,7 +337,7 @@ dialog::backdrop { background: #19283ad9; }
   .mix-glass { width: 52px; height: 90px; }
   .poem-strips li { padding: 10px; }
   .poem-strips li > span { font-size: 15px; }
-  .poem-strips button { min-width: 36px; padding: 6px; }
+  .poem-strips button { min-width: 44px; padding: 6px; }
   .cinema { padding: 24px 20px; }
   .life-notice { right: 16px; bottom: 16px; padding: 20px; }
   .teacher-test-actions { display: grid; }
