@@ -39,6 +39,8 @@ The clock mechanism keeps its state-driven minute hands; do not replace those wi
 
 After editing the cover artwork, run `npm run render:art` and commit both its source and the generated SVG. The helper uses only Node.js built-ins. Keep new cover images in the repository, supply meaningful alt text, and add the activity to `catalogue.js`; the homepage template renders its metadata automatically.
 
+Linked styles, scripts and changed illustrations carry a release query such as `?v=playground-1`. Bump the version when replacing these assets so a returning browser loads matching markup, artwork and code. Keep the query on the relative asset URL; the files themselves retain their ordinary filenames for hosting and offline packaging.
+
 ## Layout and interaction
 
 The hub shows its first game's illustration, title, and Explore game action in the initial viewport at 1024×600 and 375×812. The asymmetric scene and paper panel form one exhibit. Future entries receive their own illustration and real metadata; do not add empty slots or promotional placeholders.

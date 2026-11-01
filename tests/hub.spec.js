@@ -38,7 +38,7 @@ test('keyboard users can skip navigation and explore the collection',async({page
 });
 
 test('catalogue entries create distinct cards without changing the homepage',async({page})=>{
-  await page.route('**/catalogue.js',async route=>{
+  await page.route('**/catalogue.js*',async route=>{
     const response=await route.fetch();
     const body=await response.text();
     await route.fulfill({response,body:body+"\nactivities.push({...activities[0],id:'another-adventure',title:'Another adventure'});"});
@@ -130,4 +130,15 @@ test('fonts load locally and reduced motion disables the cover transition',async
   expect(fonts).toHaveLength(2);
   expect(fonts.every(url=>url.startsWith('http://127.0.0.1:4173/assets/fonts/'))).toBe(true);
   await expect(page.locator('.game-art img')).toHaveCSS('transition-duration','0s');
+});
+
+test('returning visitors bypass the old unversioned hub assets',async({page})=>{
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.route('**/hub.js',route=>route.fulfill({contentType:'text/javascript',body:"throw new Error('Stale hub script');"}));
+  await page.route('**/styles.css',route=>route.fulfill({contentType:'text/css',body:'body { display: none; }'}));
+  await page.goto('/');
+  await expect(page.locator('.game-card')).toBeVisible();
+  await page.getByRole('link',{name:'Explore game',exact:true}).click();
+  await expect(page.locator('#home')).toBeVisible();
+  expect(errors).toEqual([]);
 });

@@ -7,7 +7,7 @@ const activities = [
     description: 'Six mysterious rooms. One ghost to rescue. Follow the clues and use maths, evidence and poetry to bring Pip home.',
     href: 'games/midnight-museum/index.html',
     illustration: {
-      src: 'assets/midnight-museum.svg',
+      src: 'assets/midnight-museum.svg?v=playground-1',
       alt: 'Pip the friendly ghost in a golden frame inside a moonlit museum',
     },
     type: 'Escape room',
