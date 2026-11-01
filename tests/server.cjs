@@ -7,10 +7,11 @@ http.createServer((req,res)=>{
   const files = Object.fromEntries(museumFiles.map(file=>['/games/midnight-museum/'+file,'games/midnight-museum/'+file]));
   files['/games/midnight-museum/']='games/midnight-museum/index.html';
   files['/']=files['/index.html']='index.html';
+  for(const file of ['styles.css','assets/favicon.svg','assets/midnight-museum.svg'])files['/'+file]=file;
   const pathname=req.url?.split('?')[0];
   const file = files[pathname];
   if(!file || !fs.existsSync(path.join(root,file))) {res.writeHead(404);return res.end();}
-  const types={'.js':'text/javascript','.css':'text/css','.html':'text/html'};
+  const types={'.js':'text/javascript','.css':'text/css','.html':'text/html','.svg':'image/svg+xml'};
   res.setHeader('Content-Type',types[path.extname(file)]);
   const data=fs.readFileSync(path.join(root,file));
   res.setHeader('Accept-Ranges','bytes');
