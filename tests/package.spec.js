@@ -24,7 +24,7 @@ test('the packaged ZIP opens offline and links between the hub and museum',async
   });
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto(pathToFileURL(path.join(extracted,'index.html')).href);
-  await expect(page.getByRole('heading',{name:'What will you discover?'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Choose your next adventure.'})).toBeVisible();
   await expect(page.locator('.game-card')).toHaveCount(1);
   expect(await page.locator('.game-art img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
   await page.getByRole('link',{name:'Explore game',exact:true}).click();

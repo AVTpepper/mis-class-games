@@ -1,9 +1,9 @@
 (() => {
   const grid = document.getElementById('game-grid');
   const template = document.getElementById('game-card-template');
-  const cards = activities.map(activity => {
+  const cards = activities.map((activity, index) => {
     const card = template.content.cloneNode(true);
-    const heading = card.querySelector('h3');
+    const heading = card.querySelector('.game-title');
     heading.id = 'game-' + activity.id;
     heading.textContent = activity.title;
     card.querySelector('article').setAttribute('aria-labelledby', heading.id);
@@ -12,6 +12,7 @@
     image.src = activity.illustration.src;
     image.alt = activity.illustration.alt;
     card.querySelector('.game-type-label').textContent = activity.type;
+    card.querySelector('.exhibit-number').textContent = String(index + 1).padStart(2, '0');
     const subjects = activity.subjects.map(subject => {
       const tag = document.createElement('li');
       tag.textContent = subject;

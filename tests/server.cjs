@@ -11,7 +11,7 @@ http.createServer((req,res)=>{
   const relative=path.relative(root,file).split(path.sep).join('/');
   const allowed=['index.html','styles.css','catalogue.js','hub.js'].includes(relative)||/^(games|assets)\//.test(relative);
   if(!allowed || !fs.existsSync(file) || !fs.statSync(file).isFile()) {res.writeHead(404);return res.end();}
-  const types={'.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
+  const types={'.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.woff2':'font/woff2'};
   res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');
   const data=fs.readFileSync(file);
   res.setHeader('Accept-Ranges','bytes');

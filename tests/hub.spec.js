@@ -5,8 +5,8 @@ const {investigateRoom}=require('./exploration-helper');
 test('hub introduces the museum and opens its introduction',async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('/');
-  await expect(page).toHaveTitle('MIS Class Games · A place to learn and play');
-  await expect(page.getByRole('heading',{level:1})).toHaveText('Big ideas.Good games.');
+  await expect(page).toHaveTitle('MIS Class Games · Choose your next adventure');
+  await expect(page.getByRole('heading',{level:1})).toHaveText('Choose your next adventure.');
   await expect(page.locator('.game-card')).toHaveCount(1);
   await expect(page.locator('.game-card')).toContainText('20 minutes');
   await expect(page.locator('.game-card')).toContainText('Team activity');
@@ -31,9 +31,6 @@ test('keyboard users can skip navigation and explore the collection',async({page
   await expect(page.getByRole('link',{name:'Skip to content'})).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#main')).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect(page.getByRole('link',{name:'Let’s explore'})).toBeFocused();
-  await page.keyboard.press('Enter');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link',{name:'Explore game',exact:true})).toBeFocused();
   await page.keyboard.press('Enter');
@@ -63,7 +60,7 @@ test('hub supports browser back, refresh, and the GitHub Pages repository prefix
   await page.getByRole('link',{name:'Explore game',exact:true}).click();
   await page.getByRole('link',{name:'All games',exact:false}).click();
   await expect(page).toHaveURL(/\/mis-class-games\/index.html$/);
-  await expect(page.getByRole('heading',{name:'What will you discover?'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Choose your next adventure.'})).toBeVisible();
   expect(failures).toEqual([]);
 });
 
@@ -79,7 +76,7 @@ for(const width of [375,1024])test(`leaving for the hub retains the team save an
   await page.locator('#value1').fill('36');
   const save=await page.evaluate(()=>localStorage.getItem('midnight-museum-v2'));
   await page.getByRole('link',{name:'All games',exact:false}).click();
-  await expect(page).toHaveTitle('MIS Class Games · A place to learn and play');
+  await expect(page).toHaveTitle('MIS Class Games · Choose your next adventure');
   expect(await page.evaluate(()=>localStorage.getItem('midnight-museum-v2'))).toBe(save);
   await page.clock.fastForward(60000);
   await page.getByRole('link',{name:'Explore game',exact:true}).click();
@@ -113,4 +110,24 @@ test('hub still opens the museum when browser storage is unavailable',async({pag
   await expect(page.locator('#home')).toBeVisible();
   await page.locator('#enterBtn').click();await skipCutscene(page);
   await expect(page.locator('#title')).toHaveText('The Clockmaker’s Secret');
+});
+
+for(const viewport of [{width:1024,height:600},{width:375,height:812}])test(`the playable adventure is in the first viewport (${viewport.width}px)`,async({page})=>{
+  await page.setViewportSize(viewport);await page.goto('/');
+  await page.evaluate(()=>document.fonts.ready);
+  for(const selector of ['.game-art img','.game-title','.game-card .button']){
+    const box=await page.locator(selector).boundingBox();
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y+box.height,selector+' should not require scrolling').toBeLessThanOrEqual(viewport.height);
+  }
+});
+
+test('fonts load locally and reduced motion disables the cover transition',async({page})=>{
+  const fonts=[];page.on('request',request=>{if(request.resourceType()==='font')fonts.push(request.url());});
+  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');
+  await page.evaluate(()=>document.fonts.ready);
+  expect(await page.evaluate(()=>document.fonts.check('600 30px Fraunces')&&document.fonts.check('400 16px "DM Sans"'))).toBe(true);
+  expect(fonts).toHaveLength(2);
+  expect(fonts.every(url=>url.startsWith('http://127.0.0.1:4173/assets/fonts/'))).toBe(true);
+  await expect(page.locator('.game-art img')).toHaveCSS('transition-duration','0s');
 });
