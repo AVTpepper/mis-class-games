@@ -10,7 +10,7 @@ async function unlockGuide(page){
 test('teacher can test every room and lock in separate tabs without changing a team save',async({page})=>{
   test.setTimeout(90000);
   await page.clock.install();await page.clock.pauseAt(new Date());
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await investigateRoom(page);await page.locator('#value1').fill('36');await page.locator('#checkBtn').click();await skipCutscene(page);
   const saved=await page.evaluate(()=>localStorage.getItem(SAVE_KEY));
   await unlockGuide(page);
@@ -43,7 +43,7 @@ test('teacher can test every room and lock in separate tabs without changing a t
 });
 
 test('teacher tests reset on refresh and cannot be launched from the locked teacher gate',async({page})=>{
-  await page.goto('/');
+  await page.goto('/games/midnight-museum/');
   await page.evaluate(()=>{window.testOpened=false;window.open=()=>{window.testOpened=true;};launchTeacherTest(3);});
   expect(await page.evaluate(()=>window.testOpened)).toBe(false);
   await page.reload();await unlockGuide(page);
@@ -61,7 +61,7 @@ test('teacher tests reset on refresh and cannot be launched from the locked teac
   await expect(page.locator('#teacherTestFeedback')).toContainText('Allow pop-ups');
 });
 test('teacher gate protects the normal view, keeps time running and relocks on exit',async({page})=>{
-  await page.clock.install({time:new Date('2026-10-22T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-22T12:00:01Z'));await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.clock.install({time:new Date('2026-10-22T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-22T12:00:01Z'));await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await page.clock.fastForward(5000);
   if(await page.locator('#sidebarToggle').isVisible())await page.locator('#sidebarToggle').click();
   await page.getByRole('button',{name:'Teacher room',exact:true}).click();

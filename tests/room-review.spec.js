@@ -1,7 +1,7 @@
 const {test,expect}=require('@playwright/test');
 const {collectVisible,solveMechanism}=require('./exploration-helper');
 for(const viewport of [{width:1024,height:600},{width:375,height:812}])test(`review real room states at ${viewport.width}px`,async({page})=>{
-  test.setTimeout(120000);await page.setViewportSize(viewport);await page.goto('/');
+  test.setTimeout(120000);await page.setViewportSize(viewport);await page.goto('/games/midnight-museum/');
   async function inspectStage(room,name){
     await page.screenshot({path:`artifacts/review-${viewport.width}-${room+1}-${name}.png`,fullPage:true});
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`${room+1} ${name} horizontal overflow`).toBe(true);

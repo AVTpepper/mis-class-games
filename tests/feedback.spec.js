@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const {skipCutscene}=require('./cutscene-helper');
 const {investigateRoom,collectVisible}=require('./exploration-helper');
 
-async function begin(page){await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);}
+async function begin(page){await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);}
 
 test('wrong answers show the lives left and explain when the team must restart',async({page})=>{
   await begin(page);await investigateRoom(page);
@@ -36,7 +36,7 @@ test('game over stops play, survives refresh and waits for a keyboard restart',a
 });
 
 test('Snake crashes and final code errors use the same clear life warnings',async({page})=>{
-  await page.clock.install();await page.clock.pauseAt(new Date());await page.goto('/');
+  await page.clock.install();await page.clock.pauseAt(new Date());await page.goto('/games/midnight-museum/');
   await page.evaluate(()=>{started=true;index=5;render();show('game');});await investigateRoom(page);
   await page.locator('#snakeToggle').click();await page.clock.runFor(3000);
   await expect(page.locator('#lifeNoticeTitle')).toHaveText('Life lost! 4 lives left.');

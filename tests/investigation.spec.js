@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const {skipCutscene}=require('./cutscene-helper');
 test('clickable room items reveal readable clues directly without loading videos',async({page})=>{
   const media=[];page.on('request',request=>{if(request.resourceType()==='media')media.push(request.url());});
-  await page.clock.install();await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.clock.install();await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await page.locator('.object').first().click();
   await expect(page.locator('#objectClue')).toContainText('The brass clock chimes every 9 minutes.');
   await expect(page.locator('#cutscene')).not.toBeVisible();
@@ -20,7 +20,7 @@ test('clickable room items reveal readable clues directly without loading videos
 });
 test('room illustration and item clues remain usable offline on mobile',async({page,context})=>{
   await page.setViewportSize({width:375,height:812});await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await context.setOffline(true);await page.locator('.object').first().click();
   await expect(page.locator('.room-scene')).toBeVisible();
   await expect(page.locator('#objectClue')).toContainText('every 9 minutes');

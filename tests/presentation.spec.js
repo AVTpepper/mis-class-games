@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const {skipCutscene}=require('./cutscene-helper');
 
 test('the whole illustration fits above its caption in every room and aspect ratio',async({page})=>{
-  test.setTimeout(60000);await page.goto('/');
+  test.setTimeout(60000);await page.goto('/games/midnight-museum/');
   for(const viewport of [{width:1600,height:900},{width:1366,height:768},{width:1024,height:600},{width:375,height:812}]){
     await page.setViewportSize(viewport);
     for(let room=0;room<6;room++){
@@ -25,7 +25,7 @@ test('the whole illustration fits above its caption in every room and aspect rat
 });
 
 test('the collected clue table has a visible heading inside its border',async({page})=>{
-  await page.setViewportSize({width:1024,height:600});await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.setViewportSize({width:1024,height:600});await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await page.locator('.object').first().click();
   const table=page.locator('.clue-table'),heading=table.getByRole('heading',{name:'Clues',exact:true});
   await expect(heading).toBeVisible();await expect(table.locator('button')).toHaveCount(1);
@@ -45,7 +45,7 @@ test('Halloween music plays changing timed notes and stops completely when muted
       return oscillator;
     };
   });
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   expect(await page.evaluate(()=>MuseumAudio.status().contextState)).toBe('not-created');
   await page.locator('#musicToggle').click();
   await expect.poll(()=>page.evaluate(()=>window.__musicNotes.length)).toBeGreaterThan(18);

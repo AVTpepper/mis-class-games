@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const {skipCutscene}=require('./cutscene-helper');
 const {collectVisible,solveMechanism,investigateRoom}=require('./exploration-helper');
 test('all scene objects and labels stay separate at desktop tablet and phone widths',async({page})=>{
-  await page.goto('/');
+  await page.goto('/games/midnight-museum/');
   for(const width of [320,375,768,1280]){
     await page.setViewportSize({width,height:900});
     for(let room=0;room<6;room++){
@@ -21,7 +21,7 @@ test('all scene objects and labels stay separate at desktop tablet and phone wid
   }
 });
 test('hidden compartments require experimentation and collected clues survive refresh',async({page})=>{
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await expect(page.locator('.object').nth(2)).not.toBeVisible();
   await collectVisible(page);
   await expect(page.locator('#challenge')).not.toBeVisible();
@@ -42,7 +42,7 @@ test('hidden compartments require experimentation and collected clues survive re
   await expect(page.locator('#lives')).toHaveText('5 / 5 lives');
 });
 test('mixing experiments are free and persist without revealing the lock early',async({page})=>{
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await investigateRoom(page);await page.locator('#value1').fill('36');await page.locator('#checkBtn').click();await skipCutscene(page);
   await expect(page.locator('.object').first()).not.toBeVisible();
   await collectVisible(page);await page.locator('#activityNext').click();

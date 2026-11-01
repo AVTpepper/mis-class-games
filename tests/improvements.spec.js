@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const {skipCutscene}=require('./cutscene-helper');
 const {investigateRoom}=require('./exploration-helper');
 const {catchFirefly}=require('./interlude-helper');
-async function begin(page){await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);}
+async function begin(page){await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);}
 async function choose(page,group,value){await page.locator(`[data-group="${group}"] .option`).filter({hasText:new RegExp('^'+value+' ')}).click();}
 async function solveClock(page){await investigateRoom(page);await page.locator('#value1').fill('36');await page.locator('#checkBtn').click();await skipCutscene(page);}
 
@@ -69,7 +69,7 @@ test('countdown can be hidden and audio is silent until explicitly enabled',asyn
   await page.reload();expect((await page.evaluate(()=>MuseumAudio.status())).effects).toBe(false);
 });
 for(const viewport of [{width:1024,height:600},{width:375,height:812}])test(`arcade breaks fit and can be skipped at ${viewport.width}px`,async({page})=>{
-  await page.setViewportSize(viewport);await page.goto('/');
+  await page.setViewportSize(viewport);await page.goto('/games/midnight-museum/');
   for(const room of [2,4]){
     await page.evaluate(room=>{index=room;code=rooms.slice(0,room).map(r=>r.digit);started=true;inspected=[];selected={};answers={};jars=[];Interludes.reset();Interludes.begin(room);show('interlude');},room);
     await expect(page.locator('#interlude')).toBeVisible();

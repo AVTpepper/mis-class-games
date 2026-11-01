@@ -14,7 +14,7 @@ test('team explores every room, recovers progress, and rescues Pip',async({page}
   await page.addInitScript(()=>{Math.random=()=>0;});
   await page.clock.install({time:new Date('2026-10-21T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-21T12:00:01Z'));
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('/');
+  await page.goto('/games/midnight-museum/');
   await page.getByRole('button',{name:'Escape room',exact:true}).click();await skipCutscene(page);
   await expect(page.locator('#title')).toHaveText('The Clockmaker’s Secret');
   await expect(page.locator('#checkBtn')).toBeDisabled();
@@ -72,7 +72,7 @@ test('team explores every room, recovers progress, and rescues Pip',async({page}
 });
 test('cutscenes respect reduced motion and can be skipped for the next puzzle',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await inspect(page);await page.locator('#value1').fill('36');await page.locator('#checkBtn').click();await skipCutscene(page);
   expect(await page.locator('.portal-door').first().evaluate(e=>getComputedStyle(e).display)).toBe('none');
   expect(await page.locator('#cutsceneTitle').evaluate(e=>getComputedStyle(e).animationName)).toBe('none');
@@ -81,7 +81,7 @@ test('cutscenes respect reduced motion and can be skipped for the next puzzle',a
   await expect(page.locator('.footer p')).toHaveText('pyp 6 - classroom halloween escape room');
 });
 test('last team life resets all earned progress and persists the fresh game',async({page})=>{
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await inspect(page);await page.locator('#value1').fill('36');await page.locator('#checkBtn').click();await skipCutscene(page);
   await inspect(page);
   await page.locator('#value2a').fill('1');await page.locator('#value2b').fill('1');
@@ -107,7 +107,7 @@ test('last team life resets all earned progress and persists the fresh game',asy
   await expect(page.locator('#lives')).toHaveText('5 / 5 lives');
 });
 test('continuous timer, refresh, timeout, restart and mobile layout',async({page})=>{
-  await page.setViewportSize({width:375,height:812});await page.clock.install({time:new Date('2026-10-22T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-22T12:00:01Z'));await page.goto('/');
+  await page.setViewportSize({width:375,height:812});await page.clock.install({time:new Date('2026-10-22T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-22T12:00:01Z'));await page.goto('/games/midnight-museum/');
   await page.locator('#enterBtn').click();await skipCutscene(page);await page.clock.fastForward(5000);await expect(page.locator('#clock')).toHaveText('19:55');
   await expect(page.locator('#pauseBtn')).toHaveCount(0);await page.locator('#sidebarToggle').click();await page.getByRole('button',{name:'Home',exact:true}).click();await page.clock.fastForward(60000);
   await page.reload();await page.clock.fastForward(60000);await page.locator('#enterBtn').click();await skipCutscene(page);await expect(page.locator('#clock')).toHaveText('17:55');
@@ -122,7 +122,7 @@ test('continuous timer, refresh, timeout, restart and mobile layout',async({page
 });
 test('costume voting uses configured form and accessible empty state',async({page})=>{
   await page.route('https://docs.google.com/**',r=>r.fulfill({body:'Voting form'}));
-  await page.goto('/');await page.getByRole('button',{name:'Costume awards',exact:true}).click();
+  await page.goto('/games/midnight-museum/');await page.getByRole('button',{name:'Costume awards',exact:true}).click();
   await expect(page.locator('#formShell iframe')).toHaveAttribute('src','https://docs.google.com/forms/d/e/1FAIpQLSc4OojxYbd5VzChovNeGCGnjMCrabJye-ya-9DLnqHuXAny9w/viewform?usp=dialog&embedded=true');
   await expect(page.locator('#formShell a')).toHaveAttribute('href','https://docs.google.com/forms/d/e/1FAIpQLSc4OojxYbd5VzChovNeGCGnjMCrabJye-ya-9DLnqHuXAny9w/viewform?usp=dialog');
   await expect(page.locator('#formShell a')).toHaveAttribute('target','_blank');

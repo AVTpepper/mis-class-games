@@ -7,13 +7,13 @@ async function openBreak(page,room){
   await page.evaluate(room=>{index=room;started=true;Interludes.reset();Interludes.begin(room);show('interlude');},room);
 }
 async function openSnake(page){
-  await page.goto('/');
+  await page.goto('/games/midnight-museum/');
   await page.evaluate(()=>{started=true;index=5;render();show('game');});
   await investigateRoom(page);
 }
 
 test('Enter submits typed lock answers once and leaves working fields alone',async({page})=>{
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);await investigateRoom(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);await investigateRoom(page);
   await page.locator('#clockMultiplesA').fill('9,18,27,36');await page.locator('#clockMultiplesA').press('Enter');
   await expect(page.locator('#lives')).toHaveText('5 / 5 lives');
   await page.locator('#value1').fill('12');await page.locator('#value1').press('Enter');
@@ -42,7 +42,7 @@ test('snake accepts arrows and uppercase WASD and renders between simulation tic
 });
 
 test('memory has six pairs and upgrades a saved six-card game without losing matches',async({page})=>{
-  await page.goto('/');await openBreak(page,2);await expect(page.locator('.lantern-card')).toHaveCount(12);
+  await page.goto('/games/midnight-museum/');await openBreak(page,2);await expect(page.locator('.lantern-card')).toHaveCount(12);
   expect(await page.evaluate(()=>Interludes.snapshot().cards.filter(c=>c===5))).toHaveLength(2);
   await page.evaluate(()=>{Interludes.restore({pending:2,cards:[0,1,2,1,0,2],matched:[0],open:[1],moves:2});Interludes.render();});
   await expect(page.locator('.lantern-card')).toHaveCount(12);await expect(page.locator('.lantern-card:disabled')).toHaveCount(2);
@@ -52,7 +52,7 @@ test('memory has six pairs and upgrades a saved six-card game without losing mat
 
 test('flashlight wanders, hides bugs and rejects catches until they are lit',async({page})=>{
   await page.addInitScript(()=>Math.random=()=>0);
-  await page.clock.install();await page.clock.pauseAt(new Date());await page.goto('/');await openBreak(page,4);
+  await page.clock.install();await page.clock.pauseAt(new Date());await page.goto('/games/midnight-museum/');await openBreak(page,4);
   await expect(page.locator('#firefly')).toBeDisabled();await expect(page.locator('#firefly')).toBeHidden();
   await page.evaluate(()=>Interludes.catchOne());expect(await page.evaluate(()=>Interludes.snapshot().caught)).toBe(0);
   const before=await page.locator('.firefly-field').getAttribute('style');await page.clock.runFor(1000);
@@ -68,7 +68,7 @@ test('flashlight wanders, hides bugs and rejects catches until they are lit',asy
 
 test('reduced motion keeps the flashlight still and manual aiming available',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install();await page.clock.pauseAt(new Date());
-  await page.goto('/');await openBreak(page,4);const before=await page.locator('.firefly-field').getAttribute('style');
+  await page.goto('/games/midnight-museum/');await openBreak(page,4);const before=await page.locator('.firefly-field').getAttribute('style');
   await page.clock.runFor(3000);expect(await page.locator('.firefly-field').getAttribute('style')).toBe(before);
   await catchFirefly(page);await expect(page.locator('#breakStatus')).toContainText('1 / 5');
 });

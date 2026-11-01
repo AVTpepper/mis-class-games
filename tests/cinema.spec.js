@@ -2,7 +2,7 @@ const {skipCutscene}=require('./cutscene-helper');
 const {investigateRoom}=require('./exploration-helper');
 const {test,expect}=require('@playwright/test');
 test('cutscenes stay open until Continue while the countdown keeps running',async({page})=>{
-  await page.clock.install({time:new Date('2026-10-21T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-21T12:00:01Z'));await page.goto('/');
+  await page.clock.install({time:new Date('2026-10-21T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-21T12:00:01Z'));await page.goto('/games/midnight-museum/');
   await expect(page.getByRole('button',{name:'Teacher room',exact:true})).toBeVisible();
   await page.locator('#enterBtn').click();
   await expect(page.locator('#cutscene')).toBeVisible();
@@ -21,7 +21,7 @@ test('cutscenes stay open until Continue while the countdown keeps running',asyn
   await expect(page.locator('#title')).toHaveText('The Potion of Proportions');
 });
 test('home actions have space and teacher access is prominent on desktop and mobile',async({page})=>{
-  await page.goto('/');
+  await page.goto('/games/midnight-museum/');
   for(const width of [1280,375]) {
     await page.setViewportSize({width,height:850});
     const teacher=page.getByRole('button',{name:'Teacher room',exact:true});

@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const {skipCutscene}=require('./cutscene-helper');
 
 test('sidebar contains information and leaves the activity most of the screen',async({page})=>{
-  await page.setViewportSize({width:1024,height:600});await page.goto('/');
+  await page.setViewportSize({width:1024,height:600});await page.goto('/games/midnight-museum/');
   await page.locator('#enterBtn').click();await skipCutscene(page);
   for(const selector of ['.top','#teamStatus','.status','.footer','#codeSoFar'])await expect(page.locator('#gameSidebar').locator(selector)).toHaveCount(1);
   const sidebar=await page.locator('#gameSidebar').boundingBox(),activity=await page.locator('.room').boundingBox();
@@ -21,7 +21,7 @@ test('sidebar contains information and leaves the activity most of the screen',a
 });
 
 test('mobile information drawer keeps progress, counts down, and closes with Escape',async({page})=>{
-  await page.setViewportSize({width:375,height:812});await page.clock.install({time:new Date('2026-10-22T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-22T12:00:01Z'));await page.goto('/');
+  await page.setViewportSize({width:375,height:812});await page.clock.install({time:new Date('2026-10-22T12:00:00Z')});await page.clock.pauseAt(new Date('2026-10-22T12:00:01Z'));await page.goto('/games/midnight-museum/');
   await page.locator('#enterBtn').click();await skipCutscene(page);
   await expect(page.locator('#gameSidebar')).not.toBeVisible();
   await expect(page.locator('#mobileClock')).toHaveText('20:00');

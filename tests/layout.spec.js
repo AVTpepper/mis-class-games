@@ -4,7 +4,7 @@ const {collectVisible,solveMechanism}=require('./exploration-helper');
 
 test('one full activity fits desktop viewports without nested scrolling in every room',async({page})=>{
   test.setTimeout(90000);
-  await page.goto('/');
+  await page.goto('/games/midnight-museum/');
   for(const viewport of [{width:1366,height:768},{width:1280,height:720},{width:1024,height:600}]){
     await page.setViewportSize(viewport);
     for(let room=0;room<6;room++){
@@ -39,7 +39,7 @@ test('one full activity fits desktop viewports without nested scrolling in every
 
 for(const width of [1280,375])test(`activities require completion and resume after refresh (${width}px)`,async({page})=>{
   await page.setViewportSize({width,height:812});
-  await page.goto('/');await page.locator('#enterBtn').click();await skipCutscene(page);
+  await page.goto('/games/midnight-museum/');await page.locator('#enterBtn').click();await skipCutscene(page);
   await expect(page.locator('#activityNext')).toBeDisabled();
   await expect(page.locator('.scene-task')).not.toBeVisible();
   await collectVisible(page);
