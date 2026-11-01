@@ -8,6 +8,8 @@
   <title>MIS Class Games · A place to learn and play</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
+  <script src="catalogue.js" defer></script>
+  <script src="hub.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -51,11 +53,14 @@
     <section id="games" class="collection" aria-labelledby="games-title">
       <div class="section-heading"><div><p class="eyebrow">PICK YOUR NEXT ADVENTURE</p><h2 id="games-title">What will you discover?</h2></div><p>Come curious. Leave with a new idea.</p></div>
       <div id="game-grid" class="game-grid">
-        <article class="game-card">
-          <div class="game-art"><img src="assets/midnight-museum.svg" width="640" height="420" alt="Pip the friendly ghost in a golden frame inside a moonlit museum"><span class="game-type">✦ Escape room</span></div>
-          <div class="game-details"><p class="availability"><span aria-hidden="true"></span> Ready to play</p><h3>The Midnight Museum</h3><p class="game-description">Six mysterious rooms. One ghost to rescue. Follow the clues and use maths, evidence and poetry to bring Pip home.</p><ul class="subject-tags" aria-label="Subjects"><li>Maths</li><li>Language</li><li>Inquiry</li></ul><div class="game-bottom"><ul class="game-meta" aria-label="Activity details"><li>20 minutes</li><li>Team activity</li></ul><a class="button" href="games/midnight-museum/index.html">Explore game <span aria-hidden="true">↗</span></a></div></div>
-        </article>
+        <noscript><p>Choose <a href="games/midnight-museum/index.html">The Midnight Museum</a> to explore six mysterious rooms. Enable JavaScript to play.</p></noscript>
       </div>
+      <template id="game-card-template">
+        <article class="game-card">
+          <div class="game-art"><img width="640" height="420" alt=""><span class="game-type"><span aria-hidden="true">✦ </span><span class="game-type-label"></span></span></div>
+          <div class="game-details"><p class="availability"><span aria-hidden="true"></span> Ready to play</p><h3></h3><p class="game-description"></p><ul class="subject-tags" aria-label="Subjects"></ul><div class="game-bottom"><ul class="game-meta" aria-label="Activity details"><li class="game-duration"></li><li class="game-format"></li></ul><a class="button">Explore game <span aria-hidden="true">↗</span></a></div></div>
+        </article>
+      </template>
       <p class="collection-note"><span aria-hidden="true">✳</span> This is just the beginning. More ways to learn and play are on the way.</p>
     </section>
     <aside class="play-note" aria-label="A little encouragement"><span class="note-spark" aria-hidden="true">✴</span><div><h2>You don’t have to get it right the first time.</h2><p>Try an idea. Talk it through. Discover something together.</p></div><span class="note-doodle" aria-hidden="true">↗</span></aside>

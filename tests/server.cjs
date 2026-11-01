@@ -7,8 +7,9 @@ http.createServer((req,res)=>{
   const files = Object.fromEntries(museumFiles.map(file=>['/games/midnight-museum/'+file,'games/midnight-museum/'+file]));
   files['/games/midnight-museum/']='games/midnight-museum/index.html';
   files['/']=files['/index.html']='index.html';
-  for(const file of ['styles.css','assets/favicon.svg','assets/midnight-museum.svg'])files['/'+file]=file;
-  const pathname=req.url?.split('?')[0];
+  for(const file of ['styles.css','catalogue.js','hub.js','assets/favicon.svg','assets/midnight-museum.svg'])files['/'+file]=file;
+  // Serve the deployment prefix too, so tests exercise real GitHub Pages paths.
+  const pathname=req.url?.split('?')[0].replace(/^\/mis-class-games(?=\/)/,'');
   const file = files[pathname];
   if(!file || !fs.existsSync(path.join(root,file))) {res.writeHead(404);return res.end();}
   const types={'.js':'text/javascript','.css':'text/css','.html':'text/html','.svg':'image/svg+xml'};
