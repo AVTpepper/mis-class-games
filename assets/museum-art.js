@@ -2,6 +2,7 @@
 const MuseumArt = (() => {
   const colours = { navy: '#25354a', night: '#19283a', cream: '#f7f3e8', amber: '#f2a444', mint: '#72b8a5', coral: '#e87262', lilac: '#8a83c7' };
   const props = {
+    clock: '<circle cx="60" cy="61" r="44" fill="#f7f3e8" stroke="#f2a444" stroke-width="7"/><path d="M60 33V61L79 75" fill="none" stroke="#25354a" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="61" r="4" fill="#25354a"/>',
     ghost: '<path d="M30 61C30 16 91 16 91 61V111L77 101L63 113L49 101L30 111Z" fill="#f7f3e8" stroke="#25354a" stroke-width="3"/><path d="M31 68L17 56M90 68L104 55" stroke="#f7f3e8" stroke-width="9" stroke-linecap="round"/><path d="M48 58V65M73 58V65M54 78Q61 83 68 77" stroke="#25354a" stroke-width="4" stroke-linecap="round"/>',
     book: '<path d="M13 24Q36 13 60 25Q84 13 107 24V105Q83 94 60 106Q36 94 13 105Z" fill="#f7f3e8" stroke="#f2a444" stroke-width="4"/><path d="M60 25V105M26 40H46M26 53H46M26 66H42M75 40H94M75 53H94M75 66H91" stroke="#566173" stroke-width="3"/>',
     frame: '<rect x="19" y="9" width="82" height="108" rx="3" fill="#f2a444" stroke="#25354a" stroke-width="3"/><path d="M28 18H92V107H28Z" fill="#72b8a5"/><circle cx="60" cy="47" r="16" fill="#f7f3e8"/><path d="M38 94V86Q41 63 60 63Q79 63 82 86V94" fill="#25354a"/><path d="M24 14L32 22M96 14L88 22M24 112L32 104M96 112L88 104" stroke="#f7f3e8" stroke-width="2"/>',
@@ -25,7 +26,7 @@ const MuseumArt = (() => {
     spider: '<path d="M60 4V46M42 62L22 46L12 52M42 74L14 70L8 83M42 84L21 99L22 111M78 62L98 46L108 52M78 74L106 70L112 83M78 84L99 99L98 111" fill="none" stroke="#f2a444" stroke-width="5" stroke-linecap="round"/><ellipse cx="60" cy="77" rx="23" ry="28" fill="#8a83c7" stroke="#25354a" stroke-width="3"/><circle cx="53" cy="65" r="4" fill="#f7f3e8"/><circle cx="67" cy="65" r="4" fill="#f7f3e8"/>',
     firefly: '<ellipse cx="38" cy="51" rx="23" ry="15" transform="rotate(35 38 51)" fill="#a9d5c7"/><ellipse cx="81" cy="51" rx="23" ry="15" transform="rotate(-35 81 51)" fill="#a9d5c7"/><ellipse cx="60" cy="78" rx="15" ry="25" fill="#f2a444" stroke="#25354a" stroke-width="3"/><circle cx="60" cy="49" r="13" fill="#25354a"/><path d="M54 38L48 27M65 38L72 27" stroke="#25354a" stroke-width="3" stroke-linecap="round"/>',
   };
-  const roomKeys = ['book', 'flask', 'camera', 'robot', 'letter', 'cabinet'];
+  const roomKeys = ['clock', 'flask', 'camera', 'robot', 'letter', 'cabinet'];
   function prop(name) { return props[name] || props.key; }
   function icon(name, className = '') {
     return `<svg class="art-icon ${className}" viewBox="0 0 120 125" aria-hidden="true" focusable="false">${prop(name)}</svg>`;
@@ -47,5 +48,28 @@ const MuseumArt = (() => {
   function cover() {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" fill="none"><path d="M0 0H960V600H0Z" fill="#25354a"/><path d="M0 448H960V600H0Z" fill="#19283a"/><path d="M0 448H960M0 600L380 448M960 600L580 448M260 600L420 448M700 600L540 448M0 516H960" stroke="#526173" stroke-width="2"/><path d="M48 0V448M912 0V448" stroke="#526173" stroke-width="2"/><path d="M94 211V131A75 75 0 0 1 244 131V211Z" fill="#19283a" stroke="#a6babf" stroke-width="8"/><circle cx="200" cy="112" r="27" fill="#e9d3a5"/><path d="M169 56V211M94 147H244" stroke="#a6babf" stroke-width="5"/><path d="M113 262H231M131 280H214" stroke="#72b8a5" stroke-width="3"/><path d="M371 448V190A109 109 0 0 1 589 190V448Z" fill="#172639" stroke="#c9a576" stroke-width="13"/><path d="M390 448V190A90 90 0 0 1 570 190V448Z" fill="#34495a"/><path d="M480 100V448M397 205H563" stroke="#9a7e60" stroke-width="3"/><circle cx="550" cy="309" r="5" fill="#f2a444"/><path d="M413 230H464V367H413ZM496 230H548V367H496Z" stroke="#65717b" stroke-width="2"/><path d="M330 448H630V462H330ZM305 462H655V477H305Z" fill="#a37d5d"/><path d="M285 59H329M307 37V81M638 109H662M650 97V121" stroke="#f2a444" stroke-width="3"/><rect x="688" y="94" width="175" height="237" rx="3" fill="#c9a576"/><path d="M700 107H851V318H700Z" fill="#19283a"/><path d="M711 118H840V307H711Z" fill="#465a68"/><g transform="translate(719 155) scale(.94)">${props.ghost}</g><path d="M720 367H834V380H720ZM738 380V451M817 380V451" stroke="#a37d5d" stroke-width="9"/><g transform="translate(121 317) scale(.7)">${props.flask}</g><path d="M89 408H252V423H89ZM109 423V490M234 423V490" fill="#a37d5d" stroke="#a37d5d" stroke-width="6"/><g transform="translate(610 354) rotate(-19) scale(.63)">${props.key}</g><path d="M272 526Q350 495 391 496" stroke="#72b8a5" stroke-width="2" stroke-dasharray="5 8"/><circle cx="277" cy="521" r="4" fill="#72b8a5"/><path d="M698 49L705 63L720 65L708 76L711 91L698 83L685 91L688 76L677 65L691 63Z" fill="#f2a444"/><circle cx="80" cy="311" r="3" fill="#72b8a5"/><circle cx="875" cy="389" r="3" fill="#e87262"/></svg>`;
   }
-  return { icon, prop, background, cover, roomKeys };
+  function mount() {
+    document.querySelectorAll('[data-art]').forEach(element => {
+      element.innerHTML = icon(element.dataset.art);
+      element.setAttribute('aria-hidden', 'true');
+    });
+  }
+  function replaceSymbols(root) {
+    const symbols = new Map([
+      ['\u{1f47b}', 'ghost'], ['\u{1f5bc}\ufe0f', 'frame'], ['\u{1f4f8}', 'camera'],
+      ['\u{1f559}', 'clock'], ['\u{1f55b}', 'clock'], ['\u{1fad9}', 'jar'],
+    ]);
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const replacements = [];
+    while (walker.nextNode()) {
+      const name = symbols.get(walker.currentNode.textContent.trim());
+      if (name) replacements.push([walker.currentNode, name]);
+    }
+    replacements.forEach(([node, name]) => {
+      const template = document.createElement('template');
+      template.innerHTML = icon(name);
+      node.replaceWith(template.content);
+    });
+  }
+  return { icon, prop, background, cover, roomKeys, mount, replaceSymbols };
 })();

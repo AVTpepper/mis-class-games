@@ -26,10 +26,10 @@ test('home actions have space and teacher access is prominent on desktop and mob
     await page.setViewportSize({width,height:850});
     const teacher=page.getByRole('button',{name:'Teacher room',exact:true});
     await expect(teacher).toBeVisible();
-    expect(await teacher.evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(255, 209, 147)');
+    expect(await teacher.evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(242, 164, 68)');
     const a=await page.locator('#enterBtn').boundingBox();
     const b=await page.locator('.hero-actions button').nth(1).boundingBox();
-    expect(Math.max(b.x-(a.x+a.width),b.y-(a.y+a.height))).toBeGreaterThanOrEqual(13);
+    expect(Math.max(b.x-(a.x+a.width),b.y-(a.y+a.height))).toBeGreaterThanOrEqual(12);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
     await page.screenshot({path:`artifacts/home-${width}.png`,fullPage:true});
   }

@@ -1,9 +1,322 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#130e24"><title>The Midnight Museum · Classroom Edition</title><meta name="description" content="Explore six mysterious rooms and use maths, evidence and poetry to rescue Pip in a 20-minute classroom escape room.">
-<link rel="stylesheet" href="styles.css?v=teacher-tests-17"></head><body><div class="fog" aria-hidden="true"></div><div class="wrap"><header class="top"><a class="all-games" href="../../index.html" onclick="Snake.pause()">&larr; All games</a><div class="brand">🎃 PYP 6 · THE MIDNIGHT MUSEUM</div><nav class="nav"><button class="mini" onclick="show('home')">Home</button><button class="mini" onclick="resumeGame()">Escape room</button><button class="mini" onclick="show('vote')">Costume awards</button><button class="mini teacher-entry" onclick="openTeacherRoom()"><span aria-hidden="true">🔑</span> Teacher room</button></nav></header><div id="teamStatus" class="team-status hidden"><span>🛡️ Team survival</span><strong id="lives" role="status"></strong><span>Wrong answers or crashes cost a life. Zero lives = start over.</span></div><aside id="gameSidebar" class="game-sidebar hidden" aria-label="Museum information"><button id="sidebarClose" class="mini sidebar-close" onclick="toggleSidebar(false)">Back to activity</button><div id="sidebarTop"></div><div class="sidebar-tabs" role="group" aria-label="Information panels"><button id="infoTab" class="mini" aria-pressed="true" onclick="setSidebarTab('info')">Info</button><button id="cluesTab" class="mini" aria-pressed="false" onclick="setSidebarTab('clues')">Clues <span id="clueCount">0</span></button></div><div id="sidebarInfo" class="sidebar-pane"><div id="sidebarPreferences" class="preferences"><button id="timerToggle" class="mini" aria-pressed="true" onclick="toggleCountdown()">Countdown: shown</button><div class="audio-controls"><button id="soundToggle" class="mini" aria-pressed="false" onclick="MuseumAudio.toggle('effects')">Sound: off</button><button id="musicToggle" title="Halloween waltz with music-box melody, organ and bass" class="mini" aria-pressed="false" onclick="MuseumAudio.toggle('music')">Music: off</button></div><small>Optional atmosphere. You can keep solving after the bell.</small></div></div><section id="sidebarClues" class="sidebar-pane hidden" aria-label="Collected clues"><h3>Clue notebook</h3><label for="journalRoom" class="journal-label">Review a room</label><select id="journalRoom" onchange="selectJournalRoom(Number(this.value))"></select><section class="clue-table" aria-labelledby="clueTableTitle"><h4 id="clueTableTitle">Clues</h4><div id="clueChips" class="clue-chips"></div></section><aside id="objectClue" class="object-clue" role="status" aria-live="polite"><p>Click the glowing objects in the illustration to collect clues.</p></aside></section><div id="sidebarBottom"></div></aside><div class="game-toolbar"><a class="all-games toolbar-exit" href="../../index.html" onclick="Snake.pause()">&larr; All games</a><button id="sidebarToggle" class="mini" aria-expanded="false" aria-controls="gameSidebar" onclick="toggleSidebar()">Museum info</button><span id="mobileClock" aria-hidden="true"></span><span id="mobileLives" aria-hidden="true"></span></div><div class="sidebar-scrim" onclick="toggleSidebar(false)"></div><div id="teacherTestBanner" class="teacher-test-banner hidden" role="status">Teacher test tab: your team’s saved progress is safe. Close this tab when you finish.</div><p id="teacherTestFeedback" class="teacher-test-feedback" role="status"></p><main tabindex="-1" id="main">
-<section id="home"><div class="hero"><div class="portrait" role="img" aria-label="Pip the friendly ghost trapped in a painting"><div class="pip"></div></div><div class="tag">A 20-minute team mystery</div><h1>The Midnight Museum</h1><p class="lead">A mysterious inventor has trapped Pip the ghost inside a painting. The museum doors lock in 20 minutes. Use what you know about maths, evidence, technology and language to save Pip!</p><div class="hero-actions"><button class="primary" id="enterBtn" onclick="resumeGame()">Enter the museum →</button><button onclick="show('vote')">Costume awards 🏆</button></div></div><div class="grid"><div class="card"><h3>🔐 Six rooms. One rescue code.</h3><p>Work as a team on one Chromebook. Two players each clear 10 Snake levels. You share five lives: wrong answers and crashes cost a life. Lose them all and the rescue starts over. Every room gives you a number for the final door. Inspect objects, collect clues and explain your reasoning before submitting. Your progress stays on this device if you refresh.</p></div><div class="card"><h3>🏆 Vote after the rescue.</h3><p>Use the Google Form on this site to choose funniest, scariest, most creative and best homemade costume. Your teacher links responses to Google Sheets.</p></div></div></section>
-<section id="game" class="hidden"><div class="status"><div><div class="tag">Time until the museum locks</div><div class="clock" id="clock" role="timer" aria-label="Time remaining">20:00</div></div><div><div class="tag">Rooms cleared</div><div class="progress" id="progress" aria-label="Room progress"></div></div></div><div class="card room"><div class="tag" id="roomNo"></div><div class="scene" id="scene"></div><h2 id="title"></h2><button class="mini story-button" onclick="document.getElementById('roomStory').showModal()">Room story</button><h3 id="activityTitle" tabindex="-1"></h3><div id="exploration"></div><div id="challenge"></div><div class="actions"><button id="activityBack" onclick="moveActivity(-1)">Back</button><button class="primary" id="activityNext" onclick="moveActivity(1)"></button><button class="primary" id="checkBtn" onclick="checkAnswer()">Check the lock →</button><button onclick="showHint()">Ask Pip for a hint</button></div><p class="feedback" id="feedback" role="status"></p><div class="row"><span class="tag">Your code so far:</span><span id="codeSoFar"></span></div></div></section>
-<section id="interlude" class="hidden" aria-labelledby="breakTitle"><div class="card break-card"><div class="tag">Optional arcade break</div><h2 id="breakTitle"></h2><p id="breakInstructions"></p><p id="breakStatus" role="status" tabindex="-1"></p><div id="breakGame"></div><div class="actions"><button id="breakContinue" class="primary" onclick="Interludes.finish()">Continue your rescue</button><button id="breakSkip" onclick="Interludes.finish()">Skip this break</button></div><small>No lives or code digits at stake.</small></div></section><section id="final" class="hidden"><div class="hero"><div class="orb">🚪</div><div class="tag">The final door</div><h1>Release the ghost!</h1><p class="lead">Put the six numbers you earned together in room order. Enter your code to open the painting.</p><div class="card" style="max-width:590px;margin:auto"><p>Time remaining: <span id="finalClock">20:00</span></p><div class="runes" id="runes"></div><label class="label" for="finalCode">Six-digit rescue code</label><input type="text" id="finalCode" inputmode="numeric" maxlength="6" placeholder="_ _ _ _ _ _"><div class="actions" style="justify-content:center"><button class="primary" onclick="unlock()">Unlock the painting →</button></div><p id="finalFeedback" class="feedback" role="status"></p></div></div></section>
-<section id="win" class="hidden"><div class="hero"><div class="orb">👻✨</div><div class="tag">Mission complete</div><h1>Pip is free!</h1><p class="lead">The painting glows, the museum doors open, and Pip thanks your team for using logic, evidence, imagination and teamwork. You saved the museum!</p><button class="primary" onclick="show('vote')">Go to costume voting →</button></div></section>
-<section id="vote" class="hidden"><div class="hero"><div class="orb">🏆</div><h1>Costume Awards</h1><p class="lead">Vote kindly for funniest, scariest, most creative and best homemade costume. Each student can vote individually if the form settings allow it.</p></div><div class="card"><h2>Cast your vote</h2><div id="formShell" class="formShell"><p>Costume voting will open here when your teacher connects the class form. For now, celebrate your team’s rescue!</p></div></div></section>
-<section id="teacher" class="hidden"><div class="hero"><div class="tag">For teachers</div><h1>Teacher room</h1><p class="lead">Stage guides, answers and classroom planning. The team countdown keeps running while this room is open.</p></div><form id="teacherGate" class="card teacher-gate" onsubmit="unlockTeacherRoom(event)"><h2>Enter the teacher code</h2><label class="label" for="teacherCode">Teacher access code</label><input id="teacherCode" type="password" autocomplete="off" required aria-describedby="teacherFeedback"><div class="actions"><button class="primary" type="submit">Unlock teacher room</button></div><p class="feedback error" id="teacherFeedback" role="status"></p></form><div id="teacherInfo" class="hidden" tabindex="-1"></div></section></main><div class="footer"><button class="mini" onclick="requestRestart()">Start a new team game</button><p>pyp 6 - classroom halloween escape room</p></div></div><aside id="lifeNotice" class="life-notice hidden" role="alert" aria-labelledby="lifeNoticeTitle"><h2 id="lifeNoticeTitle"></h2><p id="lifeNoticeReason"></p><p>If you lose your last life, you must start over from Room 1.</p><button class="mini" onclick="document.getElementById('lifeNotice').classList.add('hidden')">Keep playing</button></aside><dialog id="gameOverDialog" aria-labelledby="gameOverTitle" aria-describedby="gameOverReason gameOverHelp"><div class="tag">No lives left · 0 / 5</div><h2 id="gameOverTitle">Game over</h2><p id="gameOverReason"></p><p id="gameOverHelp">Your team has lost all five lives. You must start over from Room 1. Your answers, clues, code digits and Snake levels will reset. Select Start again for five new lives and 20 minutes.</p><button class="primary continue-ready" autofocus onclick="startGame(false)">Start again →</button></dialog><dialog id="roomStory" aria-labelledby="roomStoryTitle"><h2 id="roomStoryTitle">Room story</h2><p class="story" id="story"></p><button onclick="document.getElementById('roomStory').close()">Back to activity</button></dialog><dialog id="cutscene" aria-labelledby="cutsceneTitle" aria-describedby="cutsceneStory"><div class="cinema"><div class="cinema-stars" aria-hidden="true"></div><p class="tag" id="cutsceneChapter"></p><div class="museum-portal" aria-hidden="true"><div class="portal-light"></div><div class="portal-door left"></div><div class="portal-door right"></div><div id="cutsceneSymbol"></div><div class="cinema-pip"><div class="pip"></div></div><svg class="cinema-lock" viewBox="0 0 120 130" focusable="false"><path class="lock-shackle" d="M34 57 V34 C34 0 86 0 86 34 V57"/><rect class="lock-body" x="17" y="52" width="86" height="68" rx="15"/><circle class="lock-keyhole" cx="60" cy="79" r="8"/></svg><div class="cinema-mist"></div></div><h2 id="cutsceneTitle"></h2><p id="cutsceneStory"></p><button class="primary" onclick="Cutscene.finish()">Continue →</button><small>Click Continue when ready · countdown continues</small></div></dialog><script src="audio.js?v=teacher-tests-17"></script><script src="interludes.js?v=teacher-tests-17"></script><script src="cutscenes.js?v=teacher-tests-17"></script><script src="snake.js?v=teacher-tests-17"></script><script src="exploration.js?v=teacher-tests-17"></script><script src="game.js?v=teacher-tests-17"></script></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f3e8">
+<title>The Midnight Museum · Classroom Edition</title>
+<meta name="description" content="Explore six mysterious rooms and use maths, evidence and poetry to rescue Pip in a 20-minute classroom escape room.">
+<link rel="preload" href="../../assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="styles.css?v=illustrated-museum-1">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="wrap">
+<header class="top">
+<a class="all-games" href="../../index.html" onclick="Snake.pause()">&larr; All games</a>
+<div class="brand">
+<span data-art="book">
+</span>PYP 6 &middot; THE MIDNIGHT MUSEUM</div>
+<nav class="nav">
+<button class="mini" onclick="show('home')">Home</button>
+<button class="mini" onclick="resumeGame()">Escape room</button>
+<button class="mini" onclick="show('vote')">Costume awards</button>
+<button class="mini teacher-entry" onclick="openTeacherRoom()">
+<span data-art="key">
+</span> Teacher room</button>
+</nav>
+</header>
+<div id="teamStatus" class="team-status hidden">
+<span>
+<span data-art="shield">
+</span> Team survival</span>
+<strong id="lives" role="status">
+</strong>
+<span>Wrong answers or crashes cost a life. Zero lives = start over.</span>
+</div>
+<aside id="gameSidebar" class="game-sidebar hidden" aria-label="Museum information">
+<button id="sidebarClose" class="mini sidebar-close" onclick="toggleSidebar(false)">Back to activity</button>
+<div id="sidebarTop">
+</div>
+<div class="sidebar-tabs" role="group" aria-label="Information panels">
+<button id="infoTab" class="mini" aria-pressed="true" onclick="setSidebarTab('info')">Info</button>
+<button id="cluesTab" class="mini" aria-pressed="false" onclick="setSidebarTab('clues')">Clues <span id="clueCount">0</span>
+</button>
+</div>
+<div id="sidebarInfo" class="sidebar-pane">
+<div id="sidebarPreferences" class="preferences">
+<button id="timerToggle" class="mini" aria-pressed="true" onclick="toggleCountdown()">Countdown: shown</button>
+<div class="audio-controls">
+<button id="soundToggle" class="mini" aria-pressed="false" onclick="MuseumAudio.toggle('effects')">Sound: off</button>
+<button id="musicToggle" title="Halloween waltz with music-box melody, organ and bass" class="mini" aria-pressed="false" onclick="MuseumAudio.toggle('music')">Music: off</button>
+</div>
+<small>Optional atmosphere. You can keep solving after the bell.</small>
+</div>
+</div>
+<section id="sidebarClues" class="sidebar-pane hidden" aria-label="Collected clues">
+<h3>Clue notebook</h3>
+<label for="journalRoom" class="journal-label">Review a room</label>
+<select id="journalRoom" onchange="selectJournalRoom(Number(this.value))">
+</select>
+<section class="clue-table" aria-labelledby="clueTableTitle">
+<h4 id="clueTableTitle">Clues</h4>
+<div id="clueChips" class="clue-chips">
+</div>
+</section>
+<aside id="objectClue" class="object-clue" role="status" aria-live="polite">
+<p>Click the outlined objects in the illustration to collect clues.</p>
+</aside>
+</section>
+<div id="sidebarBottom">
+</div>
+</aside>
+<div class="game-toolbar">
+<a class="all-games toolbar-exit" href="../../index.html" onclick="Snake.pause()">&larr; All games</a>
+<button id="sidebarToggle" class="mini" aria-expanded="false" aria-controls="gameSidebar" onclick="toggleSidebar()">Museum info</button>
+<span id="mobileClock" aria-hidden="true">
+</span>
+<span id="mobileLives" aria-hidden="true">
+</span>
+</div>
+<div class="sidebar-scrim" onclick="toggleSidebar(false)">
+</div>
+<div id="teacherTestBanner" class="teacher-test-banner hidden" role="status">Teacher test tab: your team’s saved progress is safe. Close this tab when you finish.</div>
+<p id="teacherTestFeedback" class="teacher-test-feedback" role="status">
+</p>
+<main tabindex="-1" id="main">
+<section id="home">
+<div class="hero">
+<div class="museum-intro-art">
+<img src="../../assets/midnight-museum.svg" width="960" height="600" alt="A moonlit museum, a locked door and Pip inside a golden picture frame">
+</div>
+<div class="intro-copy">
+<div class="tag">A 20-minute team mystery</div>
+<h1>The Midnight Museum</h1>
+<p class="lead">A mysterious inventor has trapped Pip the ghost inside a painting. The museum doors lock in 20 minutes. Use what you know about maths, evidence, technology and language to save Pip!</p>
+<div class="hero-actions">
+<button class="primary" id="enterBtn" onclick="resumeGame()">Enter the museum →</button>
+<button onclick="show('vote')">Costume awards <span data-art="trophy">
+</span>
+</button>
+</div>
+</div>
+</div>
+<div class="grid">
+<div class="card">
+<h3>
+<span data-art="key">
+</span> Six rooms. One rescue code.</h3>
+<p>Work as a team on one Chromebook. Two players each clear 10 Snake levels. You share five lives: wrong answers and crashes cost a life. Lose them all and the rescue starts over. Every room gives you a number for the final door. Inspect objects, collect clues and explain your reasoning before submitting. Your progress stays on this device if you refresh.</p>
+</div>
+<div class="card">
+<h3>
+<span data-art="trophy">
+</span> Vote after the rescue.</h3>
+<p>Use the Google Form on this site to choose funniest, scariest, most creative and best homemade costume. Your teacher links responses to Google Sheets.</p>
+</div>
+</div>
+</section>
+<section id="game" class="hidden">
+<div class="status">
+<div>
+<div class="tag">Time until the museum locks</div>
+<div class="clock" id="clock" role="timer" aria-label="Time remaining">20:00</div>
+</div>
+<div>
+<div class="tag">Rooms cleared</div>
+<div class="progress" id="progress" aria-label="Room progress">
+</div>
+</div>
+</div>
+<div class="card room">
+<div class="tag" id="roomNo">
+</div>
+<div class="scene" id="scene">
+</div>
+<h2 id="title">
+</h2>
+<button class="mini story-button" onclick="document.getElementById('roomStory').showModal()">Room story</button>
+<h3 id="activityTitle" tabindex="-1">
+</h3>
+<div id="exploration">
+</div>
+<div id="challenge">
+</div>
+<div class="actions">
+<button id="activityBack" onclick="moveActivity(-1)">Back</button>
+<button class="primary" id="activityNext" onclick="moveActivity(1)">
+</button>
+<button class="primary" id="checkBtn" onclick="checkAnswer()">Check the lock →</button>
+<button onclick="showHint()">Ask Pip for a hint</button>
+</div>
+<p class="feedback" id="feedback" role="status">
+</p>
+<div class="row">
+<span class="tag">Your code so far:</span>
+<span id="codeSoFar">
+</span>
+</div>
+</div>
+</section>
+<section id="interlude" class="hidden" aria-labelledby="breakTitle">
+<div class="card break-card">
+<div class="tag">Optional arcade break</div>
+<h2 id="breakTitle">
+</h2>
+<p id="breakInstructions">
+</p>
+<p id="breakStatus" role="status" tabindex="-1">
+</p>
+<div id="breakGame">
+</div>
+<div class="actions">
+<button id="breakContinue" class="primary" onclick="Interludes.finish()">Continue your rescue</button>
+<button id="breakSkip" onclick="Interludes.finish()">Skip this break</button>
+</div>
+<small>No lives or code digits at stake.</small>
+</div>
+</section>
+<section id="final" class="hidden">
+<div class="hero">
+<div class="orb" data-art="door">
+</div>
+<div class="tag">The final door</div>
+<h1>Release the ghost!</h1>
+<p class="lead">Put the six numbers you earned together in room order. Enter your code to open the painting.</p>
+<div class="card" style="max-width:590px;margin:auto">
+<p>Time remaining: <span id="finalClock">20:00</span>
+</p>
+<div class="runes" id="runes">
+</div>
+<label class="label" for="finalCode">Six-digit rescue code</label>
+<input type="text" id="finalCode" inputmode="numeric" maxlength="6" placeholder="_ _ _ _ _ _">
+<div class="actions" style="justify-content:center">
+<button class="primary" onclick="unlock()">Unlock the painting →</button>
+</div>
+<p id="finalFeedback" class="feedback" role="status">
+</p>
+</div>
+</div>
+</section>
+<section id="win" class="hidden">
+<div class="hero">
+<div class="orb" data-art="ghost">
+</div>
+<div class="tag">Mission complete</div>
+<h1>Pip is free!</h1>
+<p class="lead">The painting glows, the museum doors open, and Pip thanks your team for using logic, evidence, imagination and teamwork. You saved the museum!</p>
+<button class="primary" onclick="show('vote')">Go to costume voting →</button>
+</div>
+</section>
+<section id="vote" class="hidden">
+<div class="hero">
+<div class="orb" data-art="trophy">
+</div>
+<h1>Costume Awards</h1>
+<p class="lead">Vote kindly for funniest, scariest, most creative and best homemade costume. Each student can vote individually if the form settings allow it.</p>
+</div>
+<div class="card">
+<h2>Cast your vote</h2>
+<div id="formShell" class="formShell">
+<p>Costume voting will open here when your teacher connects the class form. For now, celebrate your team’s rescue!</p>
+</div>
+</div>
+</section>
+<section id="teacher" class="hidden">
+<div class="hero">
+<div class="tag">For teachers</div>
+<h1>Teacher room</h1>
+<p class="lead">Stage guides, answers and classroom planning. The team countdown keeps running while this room is open.</p>
+</div>
+<form id="teacherGate" class="card teacher-gate" onsubmit="unlockTeacherRoom(event)">
+<h2>Enter the teacher code</h2>
+<label class="label" for="teacherCode">Teacher access code</label>
+<input id="teacherCode" type="password" autocomplete="off" required aria-describedby="teacherFeedback">
+<div class="actions">
+<button class="primary" type="submit">Unlock teacher room</button>
+</div>
+<p class="feedback error" id="teacherFeedback" role="status">
+</p>
+</form>
+<div id="teacherInfo" class="hidden" tabindex="-1">
+</div>
+</section>
+</main>
+<div class="footer">
+<button class="mini" onclick="requestRestart()">Start a new team game</button>
+<p>pyp 6 - classroom halloween escape room</p>
+</div>
+</div>
+<aside id="lifeNotice" class="life-notice hidden" role="alert" aria-labelledby="lifeNoticeTitle">
+<h2 id="lifeNoticeTitle">
+</h2>
+<p id="lifeNoticeReason">
+</p>
+<p>If you lose your last life, you must start over from Room 1.</p>
+<button class="mini" onclick="document.getElementById('lifeNotice').classList.add('hidden')">Keep playing</button>
+</aside>
+<dialog id="gameOverDialog" aria-labelledby="gameOverTitle" aria-describedby="gameOverReason gameOverHelp">
+<div class="tag">No lives left · 0 / 5</div>
+<h2 id="gameOverTitle">Game over</h2>
+<p id="gameOverReason">
+</p>
+<p id="gameOverHelp">Your team has lost all five lives. You must start over from Room 1. Your answers, clues, code digits and Snake levels will reset. Select Start again for five new lives and 20 minutes.</p>
+<button class="primary continue-ready" autofocus onclick="startGame(false)">Start again →</button>
+</dialog>
+<dialog id="roomStory" aria-labelledby="roomStoryTitle">
+<h2 id="roomStoryTitle">Room story</h2>
+<p class="story" id="story">
+</p>
+<button onclick="document.getElementById('roomStory').close()">Back to activity</button>
+</dialog>
+<dialog id="cutscene" aria-labelledby="cutsceneTitle" aria-describedby="cutsceneStory">
+<div class="cinema">
+<div class="cinema-stars" aria-hidden="true">
+</div>
+<p class="tag" id="cutsceneChapter">
+</p>
+<div class="museum-portal" aria-hidden="true">
+<div class="portal-light">
+</div>
+<div class="portal-door left">
+</div>
+<div class="portal-door right">
+</div>
+<div id="cutsceneSymbol">
+</div>
+<div class="cinema-pip" data-art="ghost">
+</div>
+<svg class="cinema-lock" viewBox="0 0 120 130" focusable="false">
+<path class="lock-shackle" d="M34 57 V34 C34 0 86 0 86 34 V57"/>
+<rect class="lock-body" x="17" y="52" width="86" height="68" rx="15"/>
+<circle class="lock-keyhole" cx="60" cy="79" r="8"/>
+</svg>
+<div class="cinema-mist">
+</div>
+</div>
+<h2 id="cutsceneTitle">
+</h2>
+<p id="cutsceneStory">
+</p>
+<button class="primary" onclick="Cutscene.finish()">Continue →</button>
+<small>Click Continue when ready · countdown continues</small>
+</div>
+</dialog>
+<script src="../../assets/museum-art.js">
+</script>
+<script src="audio.js?v=illustrated-museum-1">
+</script>
+<script src="interludes.js?v=illustrated-museum-1">
+</script>
+<script src="cutscenes.js?v=illustrated-museum-1">
+</script>
+<script src="snake.js?v=illustrated-museum-1">
+</script>
+<script src="exploration.js?v=illustrated-museum-1">
+</script>
+<script src="game.js?v=illustrated-museum-1">
+</script>
+</body>
+</html>

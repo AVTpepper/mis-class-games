@@ -1,3 +1,4 @@
+MuseumArt.mount();
 const rooms=[
 {title:'The Clockmaker’s Secret',scene:'🕰️',story:'Two haunted clocks control the museum doors. One chimes every 9 minutes; another every 12. They both chimed together at midnight. The caretaker needs to know when they will chime together next.',html:`<div class="puzzlePanel"><div class="clockface"><div>🕘<br>9 min</div><div>🕛<br>12 min</div></div><p>Both clocks chimed at midnight. One chimes every 9 minutes and the other every 12. How many minutes pass before they next chime together?</p><div class="board multiples-workspace"><h3>Your multiples workspace</h3><p>Count in 9s for Clock A and in 12s for Clock B. Write both lists. The first number in both lists is the least common multiple.</p><label class="label" for="clockMultiplesA">Clock A multiples · every 9 minutes</label><input id="clockMultiplesA" type="text" autocomplete="off" placeholder="Write your own list"><label class="label" for="clockMultiplesB">Clock B multiples · every 12 minutes</label><input id="clockMultiplesB" type="text" autocomplete="off" placeholder="Write your own list"></div><label class="label" for="value1">Minutes until the chimes match</label><input id="value1" type="text" inputmode="numeric" placeholder="Number of minutes"><p class="note">The first lock takes the <b>ones digit</b> of that number.</p></div>`,hint:'Write multiples of 9 and 12 in your workspace. Find the first number appearing in both lists, then take its last digit.',validate:()=>val('value1')==='36',digit:'6',reveal:'36 is the first shared multiple. The ones digit is 6.'},
 {title:'The Potion of Proportions',scene:'⚗️',story:'The rescue machine needs orange and purple potion. Keep the same balance of colours as you make a larger batch. Then work out how many jars to fill.',html:`<div class="puzzlePanel"><div class="tag">Potion recipe · orange : purple = 3 : 2</div><div class="bottles"><span class="bottle orange"></span><span class="bottle orange"></span><span class="bottle orange"></span><span class="bottle"></span><span class="bottle"></span></div><p><b>Part A:</b> The recipe uses 3 orange drops for every 2 purple drops. If you use <b>12 orange drops</b>, how many purple drops keep the same ratio (balance of colours)?</p><label class="label" for="value2a">Purple drops</label><input id="value2a" inputmode="numeric" type="text" placeholder="Enter a number"><p><b>Part B:</b> The caretaker prepared <b>12 empty jars</b>. Only <b>3/4</b> of the jars need potion. How many jars is that?</p><div class="board" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${Array(12).fill('<span class="tile">🫙</span>').join('')}</div><label class="label" for="value2b">Jars to fill (the next lock digit)</label><input id="value2b" inputmode="numeric" type="text" placeholder="Enter a number"></div>`,hint:'For Part A multiply both parts of 3:2 by 4. For Part B, divide 12 into four equal groups and take three.',validate:()=>val('value2a')==='8'&&val('value2b')==='9',digit:'9',reveal:'The equivalent ratio is 12:8, and 3/4 of 12 = 9 jars.'},
@@ -66,7 +67,7 @@ function renderNotebook(){
   if(!found.includes(journalClue))journalClue=found.at(-1)??null;
   el('clueChips').innerHTML=found.map(i=>`<button class="mini ${i===journalClue?'selected':''}" aria-pressed="${i===journalClue}" onclick="readClue(${i})">${objects[journalRoom][i][1]}</button>`).join('');
   const clue=journalClue===null?null:objects[journalRoom][journalClue];
-  el('objectClue').innerHTML=clue?`<div class="tag">Clue collected</div><h3>${clue[1]}</h3><p>${clue[2]}</p>`:'<p>Click the glowing objects in the illustration. Collected clues stay here throughout your rescue.</p>';
+  el('objectClue').innerHTML=clue?`<div class="tag">Clue collected</div><h3>${clue[1]}</h3><p>${clue[2]}</p>`:'<p>Click the outlined objects in the illustration. Collected clues stay here throughout your rescue.</p>';
 }
 function toggleCountdown(){countdownShown=!countdownShown;try{localStorage.setItem('museum-countdown',countdownShown?'shown':'hidden');}catch{}renderPreferences();}
 function renderPreferences(){
@@ -150,13 +151,14 @@ function render() {
   if(journalRoom!==index){journalRoom=index;journalClue=null;}
   roomFlow.part=0;
   el('roomNo').textContent=`Room ${index+1} of ${rooms.length}`;
-  el('scene').textContent=r.scene; el('title').textContent=r.title; el('story').textContent=r.story;
+  el('scene').innerHTML=MuseumArt.icon(MuseumArt.roomKeys[index]); el('title').textContent=r.title; el('story').textContent=r.story;
   el('challenge').dataset.room=index;
   el('challenge').innerHTML=r.html;
+  MuseumArt.replaceSymbols(el('challenge'));
   splitLockActivities();
   if(index===1) {
     const board=el('challenge').querySelector('.board');
-    board.innerHTML=Array.from({length:12},(_,i)=>`<button class="jar" aria-label="Jar ${i+1}" aria-pressed="false" onclick="toggleJar(${i},this)">🫙</button>`).join('')+'<p id="jarCount" role="status"></p>';
+    board.innerHTML=Array.from({length:12},(_,i)=>`<button class="jar" aria-label="Jar ${i+1}" aria-pressed="false" onclick="toggleJar(${i},this)">${MuseumArt.icon('jar')}</button>`).join('')+'<p id="jarCount" role="status"></p>';
     board.querySelectorAll('.jar').forEach((b,i)=>paintJar(b,i)); updateJars();
   }
   el('challenge').querySelectorAll('input').forEach(input=>{ input.value=answers[input.id] || ''; input.addEventListener('input',()=>{answers[input.id]=input.value;save();}); });
@@ -253,7 +255,7 @@ function choose(group,value,button) {
   document.querySelectorAll(`[data-group="${group}"] .option`).forEach(e=>{e.classList.remove('selected');e.setAttribute('aria-pressed','false');});
   button.classList.add('selected');button.setAttribute('aria-pressed','true');save();
 }
-function showHint() {el('feedback').className='feedback';el('feedback').textContent='👻 Pip whispers: '+rooms[index].hint;}
+function showHint() {el('feedback').className='feedback';el('feedback').textContent='Pip whispers: '+rooms[index].hint;}
 let lockEffectTimer=null;
 function playLockEffect(success,roomIndex=index,finalRescue=false) {
   MuseumAudio.play(success?'success':'failure');
@@ -267,7 +269,7 @@ function playLockEffect(success,roomIndex=index,finalRescue=false) {
   const r=rooms[roomIndex];
   const sparks=Array.from({length:12},(_,i)=>`<i class="lock-spark" style="--angle:${i*30}deg;--delay:${i*18}ms"></i>`).join('');
   effect.innerHTML=`<div class="lock-stage">
-    <div class="lock-motif">${finalRescue?'👻':r?.scene||'🚪'}</div>
+    <div class="lock-motif">${MuseumArt.icon(finalRescue?'ghost':MuseumArt.roomKeys[roomIndex]||'door')}</div>
     <div class="lock-art">${sparks}<svg viewBox="0 0 120 130" focusable="false">
       <path class="lock-shackle" d="M34 57 V34 C34 0 86 0 86 34 V57"/>
       <rect class="lock-body" x="17" y="52" width="86" height="68" rx="15"/>
@@ -338,7 +340,7 @@ function unlock() {
 }
 function celebrate() {
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  for(let i=0;i<45;i++) {const p=document.createElement('span');p.className='particle';p.setAttribute('aria-hidden','true');p.textContent=['✨','🎃','⭐','👻'][i%4];p.style.left=(Math.random()*100)+'%';p.style.animationDelay=(Math.random()*1.8)+'s';p.style.fontSize=(15+Math.random()*20)+'px';document.body.append(p);setTimeout(()=>p.remove(),6200);}
+  for(let i=0;i<45;i++) {const p=document.createElement('span');p.className='particle';p.setAttribute('aria-hidden','true');p.style.left=(Math.random()*100)+'%';p.style.animationDelay=(Math.random()*1.8)+'s';document.body.append(p);setTimeout(()=>p.remove(),6200);}
 }
 function requestRestart() { if(!started || window.confirm('Start a new team game? This clears the current team’s clues and timer.')) startGame(); }
 
@@ -391,7 +393,7 @@ function unlockTeacherRoom(event) {
   el('teacherTestFeedback').textContent='';
   el('teacherInfo').innerHTML=`<div class="card"><h2>Plan the rescue</h2><p>Allow 5 minutes to introduce Pip, 20 minutes to escape, 10 minutes for costume voting and 5 minutes to celebrate. Aim for 2–3 minutes per curriculum room and reserve 4–5 minutes for the arcade and final code. Teams use one device; two teammates take the Snake turns.</p><p>Once a team starts, its countdown continues during cutscenes, navigation, teacher access, Snake pauses and time away from the site. Students cannot pause it. At zero time, teams may keep solving.</p><p>Optional lantern matching follows the potion room, and a firefly-catching break follows the robot room. Both can be skipped and cost no lives. The Info tab can hide the countdown; it still runs, and reaching zero never ends the rescue. Sound and an original Halloween waltz are optional and start off. Related lock questions share one screen, and the Clues tab keeps discoveries from every visited room.</p><p><b>Five shared lives:</b> an incorrect puzzle submission, incorrect final code or Snake crash costs one life. Hints and inspecting objects are free. Losing the last life opens a Game over screen. Select Start again to reset all answers, clues, digits, arcade progress and the timer, with five new lives.</p><p>Progress is saved in the current browser when storage is available. Use Start a new team game between groups. Refresh restores progress but never starts the snake automatically.</p></div>
     <div class="card teacher-testing"><h2>Test any room</h2><p>Choose Test room to try the search, room task and lock. Choose Test lock to jump straight to the questions or Snake. Each test opens in a new tab with five lives and 20 minutes. Close the test tab when you finish. Your team’s saved progress stays unchanged.</p></div>
-    <div class="teacher-stages">${rooms.map((room,i)=>`<article class="card"><div class="tag">Stage ${i+1} · digit ${room.digit}</div><h2>${room.scene} ${room.title}</h2><div class="actions teacher-test-actions"><button class="primary" aria-label="Test room ${i+1}: ${room.title}" onclick="launchTeacherTest(${i})">Test room ${i+1} ↗</button><button aria-label="Test lock ${i+1}: ${room.title}" onclick="launchTeacherTest(${i},'lock')">Test lock ↗</button></div><p><b>Learning focus:</b> ${teacherStages[i].goal}</p><p><b>Scene walkthrough:</b> ${Exploration.guide(i)}</p><p><b>Answer and reasoning:</b> ${teacherStages[i].answer}</p><p><b>Discuss with students:</b> ${teacherStages[i].discussion}</p><p><b>Available hint:</b> ${room.hint}</p></article>`).join('')}</div>
+    <div class="teacher-stages">${rooms.map((room,i)=>`<article class="card"><div class="tag">Stage ${i+1} · digit ${room.digit}</div><h2>${MuseumArt.icon(MuseumArt.roomKeys[i])} ${room.title}</h2><div class="actions teacher-test-actions"><button class="primary" aria-label="Test room ${i+1}: ${room.title}" onclick="launchTeacherTest(${i})">Test room ${i+1} ↗</button><button aria-label="Test lock ${i+1}: ${room.title}" onclick="launchTeacherTest(${i},'lock')">Test lock ↗</button></div><p><b>Learning focus:</b> ${teacherStages[i].goal}</p><p><b>Scene walkthrough:</b> ${Exploration.guide(i)}</p><p><b>Answer and reasoning:</b> ${teacherStages[i].answer}</p><p><b>Discuss with students:</b> ${teacherStages[i].discussion}</p><p><b>Available hint:</b> ${room.hint}</p></article>`).join('')}</div>
     <div class="card"><h2>The final painting</h2><p>Assemble the six digits in room order: <strong class="teacher-rescue-code">${rooms.map(room=>room.digit).join('')}</strong>. A wrong rescue code costs one life. A correct code releases Pip and starts the celebration.</p><h3>Costume awards setup</h3><p>Create a Google Form for funniest, scariest, most creative and best homemade costume; link its responses to Google Sheets. In game.js, set GOOGLE_FORM_URL to the published HTTPS responder link ending in /viewform. A forms.gle short link opens in a new tab. Use costume labels or nominee numbers and check school access settings on a student device.</p><h3>Curriculum and deployment notes</h3><p>The supplied curriculum links are PYP 6 maths, perception and responsibility, technology limitations, persuasion and poetry. The original six teaching resources were not included in this checkout, so their alignment has not been independently verified. The questions are original.</p><p>This static site works offline and on GitHub Pages. The README includes deployment, editing, voting and ZIP instructions. This code gate keeps teacher information out of the normal student view; it is not secure authentication, and source inspection can reveal answers.</p></div>
     <button class="secondary" onclick="openTeacherRoom()">Lock teacher room</button>`;
   el('teacherInfo').classList.remove('hidden');el('teacherInfo').focus();

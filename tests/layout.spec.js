@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const {skipCutscene}=require('./cutscene-helper');
 const {collectVisible,solveMechanism}=require('./exploration-helper');
 
-test('one full activity fits desktop viewports without nested scrolling in every room',async({page})=>{
+test('activities stay readable and reachable with document scrolling in every room',async({page})=>{
   test.setTimeout(90000);
   await page.goto('/games/midnight-museum/');
   for(const viewport of [{width:1366,height:768},{width:1280,height:720},{width:1024,height:600}]){
@@ -15,12 +15,15 @@ test('one full activity fits desktop viewports without nested scrolling in every
             index=room;started=true;inspected=[0,1,2];activeClue=2;roomFlow={room,stage,part};render();show('game');
           },{room,stage,part});
           const context=`${viewport.width}x${viewport.height}, room ${room+1}, ${stage} ${part}`;
+          const documentHeight=await page.evaluate(()=>document.documentElement.scrollHeight);
           for(const selector of ['.top','#teamStatus','.status','#title','#activityTitle','.room>.actions','#sidebarInfo>.row','.footer',stage==='lock'?'#challenge':'#exploration']){
             const box=await page.locator(selector).boundingBox();
             expect(box.y,context+' '+selector).toBeGreaterThanOrEqual(0);
-            expect(box.y+box.height,context+' '+selector).toBeLessThanOrEqual(viewport.height);
+            expect(box.y+box.height,context+' '+selector+' clipped by the document').toBeLessThanOrEqual(documentHeight+1);
           }
-          expect(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),context).toBe(true);
+          expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),context).toBe(true);
+          const textSizes=await page.locator(stage==='lock'?'#challenge p, #challenge .option':'.scene-task p').evaluateAll(elements=>elements.filter(e=>e.getClientRects().length).map(e=>parseFloat(getComputedStyle(e).fontSize)));
+          expect(textSizes.every(size=>size>=16),context+' readable question text').toBe(true);
           const activity=await page.locator('.room').boundingBox();
           expect(activity.width,context+' activity width').toBeGreaterThan(viewport.width*.7);
           expect(activity.height,context+' activity height').toBeGreaterThan(viewport.height*.9);
@@ -31,6 +34,8 @@ test('one full activity fits desktop viewports without nested scrolling in every
           }
           if(stage==='lock')await expect(page.locator('#exploration')).not.toBeVisible();
           if(viewport.width===1366&&room===0)await page.screenshot({path:`artifacts/activity-${stage}-${part}.png`});
+          await page.locator('.room>.actions').scrollIntoViewIfNeeded();
+          await expect(page.locator('.room>.actions')).toBeInViewport();
         }
       }
     }

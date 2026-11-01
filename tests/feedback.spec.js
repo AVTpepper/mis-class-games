@@ -48,7 +48,7 @@ test('Snake crashes and final code errors use the same clear life warnings',asyn
   await page.getByRole('button',{name:'Start again',exact:false}).click();await expect(page.locator('#game')).toBeVisible();
 });
 
-test('Continue glows only after its task is ready, including with reduced motion',async({page})=>{
+test('Continue gains tactile emphasis only when ready, including with reduced motion',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});await begin(page);
   const next=page.locator('#activityNext');await expect(next).toBeDisabled();
   expect(await next.evaluate(button=>getComputedStyle(button).boxShadow)).toBe('none');

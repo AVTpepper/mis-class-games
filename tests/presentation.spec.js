@@ -29,8 +29,11 @@ test('the collected clue table has a visible heading inside its border',async({p
   await page.locator('.object').first().click();
   const table=page.locator('.clue-table'),heading=table.getByRole('heading',{name:'Clues',exact:true});
   await expect(heading).toBeVisible();await expect(table.locator('button')).toHaveCount(1);
-  const a=await table.boundingBox(),b=await heading.boundingBox();
-  expect(b.y).toBeGreaterThan(a.y);expect(b.y+b.height).toBeLessThan(a.y+a.height);
+  const geometry=await table.evaluate(table=>{
+    const a=table.getBoundingClientRect(),b=table.querySelector('h4').getBoundingClientRect();
+    return {top:a.top,bottom:a.bottom,headingTop:b.top,headingBottom:b.bottom};
+  });
+  expect(geometry.headingTop).toBeGreaterThan(geometry.top);expect(geometry.headingBottom).toBeLessThan(geometry.bottom);
   await page.screenshot({path:'artifacts/clue-table-heading.png'});
 });
 

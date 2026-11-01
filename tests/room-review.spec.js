@@ -5,7 +5,8 @@ for(const viewport of [{width:1024,height:600},{width:375,height:812}])test(`rev
   async function inspectStage(room,name){
     await page.screenshot({path:`artifacts/review-${viewport.width}-${room+1}-${name}.png`,fullPage:true});
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`${room+1} ${name} horizontal overflow`).toBe(true);
-    if(viewport.width===1024)expect(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),`${room+1} ${name} vertical overflow`).toBe(true);
+    const actions=page.locator('.room>.actions');
+    await actions.scrollIntoViewIfNeeded();await expect(actions).toBeInViewport();
     expect(await page.locator('.room').evaluate(room=>[...room.querySelectorAll('*')].filter(e=>e.getClientRects().length&&['auto','scroll'].includes(getComputedStyle(e).overflowY)).map(e=>e.id||e.className))).toEqual([]);
     if(room===3&&name==='solved'){
       const messages=await page.locator('.mechanism-3>p[role=status]').evaluateAll(elements=>elements.map(e=>{const r=e.getBoundingClientRect();return {top:r.top,bottom:r.bottom,left:r.left,right:r.right};}));

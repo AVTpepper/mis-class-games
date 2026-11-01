@@ -74,15 +74,9 @@ for(const viewport of [{width:1024,height:600},{width:375,height:812}])test(`arc
     await page.evaluate(room=>{index=room;code=rooms.slice(0,room).map(r=>r.digit);started=true;inspected=[];selected={};answers={};jars=[];Interludes.reset();Interludes.begin(room);show('interlude');},room);
     await expect(page.locator('#interlude')).toBeVisible();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-    if(viewport.width===1024){
-      expect(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight)).toBe(true);
-      for(const selector of ['.break-card','#breakTitle','#breakGame','#breakSkip']){
-        const box=await page.locator(selector).boundingBox();
-        expect(box.y,`${room} ${selector} above viewport`).toBeGreaterThanOrEqual(0);
-        expect(box.y+box.height,`${room} ${selector} below viewport`).toBeLessThanOrEqual(viewport.height);
-      }
-      await expect(page.locator('#breakSkip')).toBeInViewport();
-    }
+    await page.locator('#breakSkip').scrollIntoViewIfNeeded();
+    await expect(page.locator('#breakSkip')).toBeInViewport();
+    expect(await page.locator('#breakInstructions').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(16);
     await page.screenshot({path:`artifacts/break-${room}-${viewport.width}.png`,fullPage:true});
     const lives=await page.locator('#lives').textContent();
     await page.locator('#breakSkip').click();await expect(page.locator('#game')).toBeVisible();
