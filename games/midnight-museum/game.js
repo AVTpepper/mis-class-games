@@ -405,3 +405,9 @@ function mountForm(){if(!GOOGLE_FORM_URL)return;let url;try{url=new URL(GOOGLE_F
 
 if(gameOver)showGameOver();
 if(teacherTest)startTeacherTest(teacherTest);
+
+// Static entry controls become interactive only when their handlers and state exist.
+document.querySelectorAll('[data-game-ready]').forEach(button=>{
+  button.disabled=false;
+  button.removeAttribute('data-game-ready');
+});

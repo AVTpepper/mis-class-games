@@ -53,4 +53,6 @@ Primary actions and mobile controls use at least 44px-high targets. Keyboard foc
 
 Keep game identifiers, save keys, puzzle content, validation, countdown behaviour, lives, audio defaults, teacher access, and test-tab isolation unchanged when extending the design. Selecting a game opens its introduction and does not start its countdown.
 
+Static entry and navigation buttons use `disabled data-game-ready` until `game.js` has initialized and restored its state. Its final initialization step enables those controls. Keep puzzle controls outside this startup group: their enabled states belong to the existing activity rules.
+
 Run `npm test` after presentation changes. Checks cover game behaviour, readable layouts, artwork bounds, text contrast, touch controls, keyboard focus, reduced motion, local fonts, prefixed URLs, and the extracted offline ZIP. Review screenshots across desktop, tablet, and phone sizes as well as automated results.

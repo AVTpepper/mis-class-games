@@ -80,3 +80,20 @@ test('the poem retains five distinct acrostic lines when text wraps on a phone',
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.locator('.poem').screenshot({path:'artifacts/redesign-poem-mobile.png'});
 });
+
+test('museum entry waits for game initialization on a slow connection',async({page})=>{
+  let release;const ready=new Promise(resolve=>{release=resolve;});
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.route('**/game.js*',async route=>{await ready;await route.continue();});
+  const navigation=page.goto('/games/midnight-museum/');
+  try{
+    await expect(page.locator('#enterBtn')).toBeVisible();
+    await expect(page.locator('#enterBtn')).toBeDisabled();
+    await expect(page.getByRole('button',{name:'Teacher room',exact:true})).toBeDisabled();
+  }finally{release();}
+  await navigation;
+  await expect(page.locator('#enterBtn')).toBeEnabled();
+  await page.locator('#enterBtn').click();
+  await expect(page.locator('#cutscene')).toBeVisible();
+  expect(errors).toEqual([]);
+});

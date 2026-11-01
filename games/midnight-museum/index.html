@@ -9,21 +9,21 @@
 <link rel="preload" href="../../assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../../assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../assets/theme.css?v=playground-1">
-<link rel="stylesheet" href="styles.css?v=illustrated-museum-1">
+<link rel="stylesheet" href="styles.css?v=illustrated-museum-2">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="wrap">
 <header class="top">
-<a class="all-games" href="../../index.html" onclick="Snake.pause()">&larr; All games</a>
+<a class="all-games" href="../../index.html" onclick="if (typeof Snake !== 'undefined') Snake.pause()">&larr; All games</a>
 <div class="brand">
 <span data-art="book">
 </span>PYP 6 &middot; THE MIDNIGHT MUSEUM</div>
 <nav class="nav">
-<button class="mini" onclick="show('home')">Home</button>
-<button class="mini" onclick="resumeGame()">Escape room</button>
-<button class="mini" onclick="show('vote')">Costume awards</button>
-<button class="mini teacher-entry" onclick="openTeacherRoom()">
+<button disabled data-game-ready class="mini" onclick="show('home')">Home</button>
+<button disabled data-game-ready class="mini" onclick="resumeGame()">Escape room</button>
+<button disabled data-game-ready class="mini" onclick="show('vote')">Costume awards</button>
+<button disabled data-game-ready class="mini teacher-entry" onclick="openTeacherRoom()">
 <span data-art="key">
 </span> Teacher room</button>
 </nav>
@@ -73,7 +73,7 @@
 </div>
 </aside>
 <div class="game-toolbar">
-<a class="all-games toolbar-exit" href="../../index.html" onclick="Snake.pause()">&larr; All games</a>
+<a class="all-games toolbar-exit" href="../../index.html" onclick="if (typeof Snake !== 'undefined') Snake.pause()">&larr; All games</a>
 <button id="sidebarToggle" class="mini" aria-expanded="false" aria-controls="gameSidebar" onclick="toggleSidebar()">Museum info</button>
 <span id="mobileClock" aria-hidden="true">
 </span>
@@ -96,8 +96,8 @@
 <h1>The Midnight Museum</h1>
 <p class="lead">A mysterious inventor has trapped Pip the ghost inside a painting. The museum doors lock in 20 minutes. Use what you know about maths, evidence, technology and language to save Pip!</p>
 <div class="hero-actions">
-<button class="primary" id="enterBtn" onclick="resumeGame()">Enter the museum →</button>
-<button onclick="show('vote')">Costume awards <span data-art="trophy">
+<button disabled data-game-ready class="primary" id="enterBtn" onclick="resumeGame()">Enter the museum →</button>
+<button disabled data-game-ready onclick="show('vote')">Costume awards <span data-art="trophy">
 </span>
 </button>
 </div>
@@ -207,7 +207,7 @@
 <div class="tag">Mission complete</div>
 <h1>Pip is free!</h1>
 <p class="lead">The painting glows, the museum doors open, and Pip thanks your team for using logic, evidence, imagination and teamwork. You saved the museum!</p>
-<button class="primary" onclick="show('vote')">Go to costume voting →</button>
+<button disabled data-game-ready class="primary" onclick="show('vote')">Go to costume voting →</button>
 </div>
 </section>
 <section id="vote" class="hidden">
@@ -245,7 +245,7 @@
 </section>
 </main>
 <div class="footer">
-<button class="mini" onclick="requestRestart()">Start a new team game</button>
+<button disabled data-game-ready class="mini" onclick="requestRestart()">Start a new team game</button>
 <p>pyp 6 - classroom halloween escape room</p>
 </div>
 </div>
@@ -306,17 +306,17 @@
 </dialog>
 <script src="../../assets/museum-art.js?v=playground-1">
 </script>
-<script src="audio.js?v=illustrated-museum-1">
+<script src="audio.js?v=illustrated-museum-2">
 </script>
-<script src="interludes.js?v=illustrated-museum-1">
+<script src="interludes.js?v=illustrated-museum-2">
 </script>
-<script src="cutscenes.js?v=illustrated-museum-1">
+<script src="cutscenes.js?v=illustrated-museum-2">
 </script>
-<script src="snake.js?v=illustrated-museum-1">
+<script src="snake.js?v=illustrated-museum-2">
 </script>
-<script src="exploration.js?v=illustrated-museum-1">
+<script src="exploration.js?v=illustrated-museum-2">
 </script>
-<script src="game.js?v=illustrated-museum-1">
+<script src="game.js?v=illustrated-museum-2">
 </script>
 </body>
 </html>
