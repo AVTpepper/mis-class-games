@@ -42,6 +42,8 @@ npm test
 
 Playwright checks the museum's complete rescue, puzzles, Snake, lives, timer, saves, teacher test tabs and layouts, plus hub navigation, keyboard use, responsive exhibits, text contrast, touch targets, local fonts, reduced motion, catalogue expansion, old saves and repository-prefixed URLs. The first adventure and its play action must be visible in the initial viewport on a short Chromebook and a phone. On Windows the tests also create and extract the offline ZIP and play through its hub-to-museum navigation with local fonts.
 
+The museum responsiveness audit checks every room and challenge at 11 phone, tablet and desktop sizes, including landscape touch layouts. Clock tests drag the native slider with a held mouse pointer and simulated fingers; additional checks cover control sizing, focus after reordering, and both arcade breaks.
+
 ## GitHub Pages
 
 In repository **Settings → Pages → Build and deployment**, select **GitHub Actions**. Push to `main`, or manually run **Deploy classroom website**. The workflow publishes the root HTML/CSS/JS plus the complete `assets/` and `games/` directories. Check the deployment link in Actions; the expected homepage is https://avtpepper.github.io/mis-class-games/.

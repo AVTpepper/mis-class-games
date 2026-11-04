@@ -37,6 +37,8 @@ The artwork is original SVG: bold silhouettes, layered geometric objects, consis
 
 The clock mechanism keeps its state-driven minute hands; do not replace those with static illustrations. Illustrations must not reveal answers or add misleading puzzle evidence.
 
+Keep both mechanism clocks in their bounded, side-by-side figures. The native range input must stay mounted while its value changes: update the hands, readout, chime text and completion state in place. Rebuilding that input during `input` events cancels mouse and touch dragging. Retain its native keyboard behaviour and accessible value description.
+
 After editing the cover artwork, run `npm run render:art` and commit both its source and the generated SVG. The helper uses only Node.js built-ins. Keep new cover images in the repository, supply meaningful alt text, and add the activity to `catalogue.js`; the homepage template renders its metadata automatically.
 
 Linked styles, scripts and changed illustrations carry a release query such as `?v=playground-1`. Bump the version when replacing these assets so a returning browser loads matching markup, artwork and code. Keep the query on the relative asset URL; the files themselves retain their ordinary filenames for hosting and offline packaging.
@@ -56,3 +58,5 @@ Keep game identifiers, save keys, puzzle content, validation, countdown behaviou
 Static entry and navigation buttons use `disabled data-game-ready` until `game.js` has initialized and restored its state. Its final initialization step enables those controls. Keep puzzle controls outside this startup group: their enabled states belong to the existing activity rules.
 
 Run `npm test` after presentation changes. Checks cover game behaviour, readable layouts, artwork bounds, text contrast, touch controls, keyboard focus, reduced motion, local fonts, prefixed URLs, and the extracted offline ZIP. Review screenshots across desktop, tablet, and phone sizes as well as automated results.
+
+The room audit covers all six rooms in search, mechanism, completed mechanism, hidden-clue and lock states across 11 phone/tablet/desktop viewports, including landscape touch layouts. It checks individual control bounds and sizes, clock dimensions, names and reachable actions, plus both optional arcade breaks. Clock tests perform real held mouse drags and touch gestures; setting a range value programmatically alone does not test dragging.
