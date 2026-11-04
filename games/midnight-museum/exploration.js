@@ -46,10 +46,29 @@ const Exploration=(()=>{
     return MuseumArt.icon(keys[room][i]);
   }
   function background(room){return MuseumArt.background(room);}
+  function minuteDescription(minute){
+    const chimes=[minute>0&&minute%9===0?'Brass clock':'',minute>0&&minute%12===0?'Silver clock':''].filter(Boolean);
+    return `${minute} minute${minute===1?'':'s'} after midnight${chimes.length?'. '+chimes.join(' and ')+' chiming.':''}`;
+  }
   function task(room){
     const s=states[room],done=s.done?'<p class="scene-discovery" role="status">✓ Task complete! Select Continue to find and read the hidden clues.</p>':'';
-    if(room===0)return `<h3>Wind the museum clocks</h3><p class="clock-explainer">The long hands show each clock’s last chime: brass jumps every 9 minutes, silver every 12.</p><p>Move the slider to count minutes after midnight. Find the first time both chime lights turn on together. This opens the desk drawer.</p><label for="sceneMinute">Minutes after midnight: <strong>${s.minute}</strong></label><input id="sceneMinute" type="range" min="0" max="48" value="${s.minute}" oninput="Exploration.change('minute',Number(this.value),'sceneMinute')"><div class="chime-lights"><span class="${s.minute>0&&s.minute%9===0?'lit':''}">Brass clock · 9 min</span><span class="${s.minute>0&&s.minute%12===0?'lit':''}">Silver clock · 12 min</span></div>${done}`;
-    if(room===1)return `<h3>The etched mixing bench</h3><p>Use the buttons to add 3 orange drops and 2 purple drops. This matches the marks on the glass and reveals a hidden recipe. Use Empty the beaker if you want to try again.</p><div class="mixing-bench"><button class="drop-orange" onclick="Exploration.drop('orange')">Add orange drop <strong>${s.orange}</strong></button><div class="mix-glass" style="--fill:${Math.min(90,(s.orange+s.purple)*9)}%;--orange-fill:${s.orange+s.purple?Math.min(90,(s.orange+s.purple)*9)*s.orange/(s.orange+s.purple):0}%" aria-label="${s.orange} orange and ${s.purple} purple drops"></div><button class="drop-purple" onclick="Exploration.drop('purple')">Add purple drop <strong>${s.purple}</strong></button></div><button class="mini" onclick="Exploration.empty()">Empty the beaker</button>${done}`;
+    if(room===0)return `<h3>Wind the museum clocks</h3>
+      <p class="clock-explainer">The long hands show each clock’s last chime: brass jumps every 9 minutes, silver every 12.</p>
+      <p id="clockSliderHelp">Drag the slider, tap its track, or use the arrow keys to count minutes after midnight. Find the first time both chime lights turn on together. This opens the desk drawer.</p>
+      <div class="clock-workbench">
+        <div class="mechanism-clocks" role="group" aria-label="Museum clocks">
+          <figure>${icon(0,0)}<figcaption>Brass clock</figcaption></figure>
+          <figure>${icon(0,1)}<figcaption>Silver clock</figcaption></figure>
+        </div>
+        <div class="clock-controls">
+          <div class="clock-range-heading"><label for="sceneMinute">Minutes after midnight</label><output id="sceneMinuteValue" for="sceneMinute" aria-hidden="true">${s.minute}</output></div>
+          <input id="sceneMinute" type="range" min="0" max="48" step="1" value="${s.minute}" aria-describedby="clockSliderHelp" aria-valuetext="${minuteDescription(s.minute)}" oninput="Exploration.change('minute',Number(this.value),'sceneMinute')">
+          <div class="range-scale" aria-hidden="true"><span>Midnight</span><span>48 min</span></div>
+          <div class="chime-lights">${[9,12].map((period,i)=>{const ringing=s.minute>0&&s.minute%period===0;return `<span data-chime="${period}" class="${ringing?'lit':''}">${i?'Silver':'Brass'} clock · ${period} min<strong>${ringing?'Chiming':'Waiting'}</strong></span>`;}).join('')}</div>
+        </div>
+      </div>
+      <p class="scene-discovery ${s.done?'':'hidden'}" role="status">✓ Task complete! Select Continue to find and read the hidden clues.</p>`;
+    if(room===1)return `<h3>The etched mixing bench</h3><p>Use the buttons to add 3 orange drops and 2 purple drops. This matches the marks on the glass and reveals a hidden recipe. Use Empty the beaker if you want to try again.</p><div class="mixing-bench"><button class="drop-orange" onclick="Exploration.drop('orange')">Add orange drop <strong>${s.orange}</strong></button><div class="mix-glass" role="img" style="--fill:${Math.min(90,(s.orange+s.purple)*9)}%;--orange-fill:${s.orange+s.purple?Math.min(90,(s.orange+s.purple)*9)*s.orange/(s.orange+s.purple):0}%" aria-label="${s.orange} orange and ${s.purple} purple drops"></div><button class="drop-purple" onclick="Exploration.drop('purple')">Add purple drop <strong>${s.purple}</strong></button></div><button class="mini" onclick="Exploration.empty()">Empty the beaker</button>${done}`;
     if(room===2){const cards=['The painting was on the floor at 21:06.','Pip deliberately pushed the painting.','No recording shows anyone touching the painting.'];return `<h3>The evidence sorting table</h3><p>Read each card. Choose Observation for a fact the camera shows. Choose Assumption for a guess about what happened. Sort all three to find a hidden note.</p>${cards.map((text,i)=>`<fieldset class="evidence-sort"><legend>${text}</legend>${['observation','assumption'].map(type=>`<button class="${s.sorts[i]===type?'selected':''}" aria-pressed="${s.sorts[i]===type}" onclick="Exploration.sort(${i},'${type}')">${type==='observation'?'Observation':'Assumption'}</button>`).join('')}</fieldset>`).join('')}${done}`;}
     if(room===3)return `<h3>The robot testing bench</h3><p>Choose Original camera and Darkness, then select Run robot test. Read the result. Choose a part that could help the robot see in the dark, then test it in Darkness too.</p><label for="robotModule">Choose a robot part</label><select id="robotModule" onchange="Exploration.change('module',this.value,'robotModule')"><option value="camera" ${s.module==='camera'?'selected':''}>Original camera</option><option value="logo" ${s.module==='logo'?'selected':''}>Shiny logo</option><option value="sensor" ${s.module==='sensor'?'selected':''}>Low-light sensor</option></select><label for="robotLight">Choose the light</label><select id="robotLight" onchange="Exploration.change('light',this.value,'robotLight')"><option value="day" ${s.light==='day'?'selected':''}>Daylight</option><option value="dark" ${s.light==='dark'?'selected':''}>Darkness</option></select><button onclick="Exploration.testRobot()">Run robot test</button><p role="status">${s.result||'Choose a robot part and a light setting. Then select Run robot test.'}</p><p class="note">Original camera tested in darkness: ${s.failed?'✓':'not yet'} · improved sensor tested in darkness: ${s.passed?'✓':'not yet'}</p>${done}`;
     if(room===4){const lines=['Careful eyes can change the tale.','Headlines shout, but facts prevail.','Evidence helps us understand.','Check the truth before you stand.','Keep your judgement close at hand.'];return `<h3>The torn poem</h3><p>Use the up and down arrows to put the poem strips in order: I, II, III, IV, V (1 to 5). This reveals a hidden page.</p><ol class="poem-strips">${s.order.map((n,i)=>`<li><span><b>${['I','II','III','IV','V'][n]}</b> ${lines[n]}</span><button class="mini" aria-label="Move strip ${['I','II','III','IV','V'][n]} up" ${i===0?'disabled':''} onclick="Exploration.move(${i},-1)">↑</button><button class="mini" aria-label="Move strip ${['I','II','III','IV','V'][n]} down" ${i===4?'disabled':''} onclick="Exploration.move(${i},1)">↓</button></li>`).join('')}</ol>${done}`;}
@@ -59,17 +78,39 @@ const Exploration=(()=>{
     const count=objects[room].filter((_,i)=>inspected.includes(i)).length;
     const secret=room===1?0:2,position=places[room][secret];
     const sealed=canInspect(room,secret)?'':`<div class="sealed-prop" data-slot="${position[0]===50?'center':position[0]<50?'left':'right'}" style="--left:${position[0]}%;--top:${position[1]}%" aria-hidden="true">${[2,4].includes(room)?icon(4,1):icon(1,1)}<small>Sealed compartment</small></div>`;
-    return `<p class="search-instruction"><strong>Click or tap each outlined object to find a clue.</strong><span>Read each clue in the Clues tab. Once you have found all the clues you can see, select Continue.</span></p><div class="room-scene scene-${room}" role="group" aria-label="${names[room]}">${background(room)}<div class="scene-dust" aria-hidden="true"></div>${sealed}${objects[room].map((o,i)=>{const p=places[room][i],visible=canInspect(room,i);return `<button class="object scene-object ${inspected.includes(i)?'found':''} ${visible?'':'hidden'}" data-slot="${p[0]===50?'center':p[0]<50?'left':'right'}" style="--left:${p?.[0]||50}%;--top:${p?.[1]||50}%" aria-controls="objectClue" aria-expanded="${activeClue===i}" onclick="inspectObject(${i})">${icon(room,i)}<span>${o[1]}</span><small>${inspected.includes(i)?'Clue collected · read again':'Click / tap to uncover'}</small></button>`;}).join('')}<div class="scene-caption">${count} / ${objects[room].length} clues · ${states[room].done?'Hidden compartment open':'A hidden compartment is still sealed'}</div></div><div class="scene-task mechanism-${room}">${room===0?`<div class="mechanism-clocks">${icon(0,0)}${icon(0,1)}</div>`:""}${task(room)}</div>`;
+    return `<p class="search-instruction"><strong>Click or tap each outlined object to find a clue.</strong><span>Read each clue in the Clues tab. Once you have found all the clues you can see, select Continue.</span></p><div class="room-scene scene-${room}" role="group" aria-label="${names[room]}">${background(room)}<div class="scene-dust" aria-hidden="true"></div>${sealed}${objects[room].map((o,i)=>{const p=places[room][i],visible=canInspect(room,i);return `<button class="object scene-object ${inspected.includes(i)?'found':''} ${visible?'':'hidden'}" data-slot="${p[0]===50?'center':p[0]<50?'left':'right'}" style="--left:${p?.[0]||50}%;--top:${p?.[1]||50}%" aria-controls="objectClue" aria-expanded="${activeClue===i}" onclick="inspectObject(${i})">${icon(room,i)}<span>${o[1]}</span><small>${inspected.includes(i)?'Clue collected · read again':'Click / tap to uncover'}</small></button>`;}).join('')}<div class="scene-caption">${count} / ${objects[room].length} clues · ${states[room].done?'Hidden compartment open':'A hidden compartment is still sealed'}</div></div><div class="scene-task mechanism-${room}">${task(room)}</div>`;
   }
   function update(focusId){
     const active=document.activeElement,action=active?.getAttribute('onclick'),label=active?.getAttribute('aria-label');
     Snake.pause();renderObjects();save();
     const focus=focusId?document.getElementById(focusId):Array.from(document.querySelectorAll('.scene-task button')).find(b=>label?b.getAttribute('aria-label')===label:action&&b.getAttribute('onclick')===action);
-    if(focus&&!focus.disabled)focus.focus({preventScroll:true});
+    const target=focus?.disabled?focus.closest('li')?.querySelector('button:not(:disabled)'):focus;
+    if(target)target.focus({preventScroll:true});
   }
   function change(key,value,focusId){
     const s=states[index];
-    if(index===0&&key==='minute'){if(value!==s.minute&&value>0){if(value%9===0)MuseumAudio.play('brass');if(value%12===0)MuseumAudio.play('silver');}s.minute=value;if(value>0&&value%9===0&&value%12===0)s.done=true;}
+    if(index===0&&key==='minute'){
+      if(!Number.isInteger(value)||value<0||value>48)return;
+      if(value!==s.minute&&value>0){if(value%9===0)MuseumAudio.play('brass');if(value%12===0)MuseumAudio.play('silver');}
+      s.minute=value;if(value>0&&value%9===0&&value%12===0)s.done=true;
+      // Keep the native range input mounted: replacing it cancels mouse/touch drags.
+      const slider=document.getElementById('sceneMinute');
+      if(slider){
+        if(slider.value!==String(value))slider.value=String(value);
+        slider.setAttribute('aria-valuetext',minuteDescription(value));
+        document.getElementById('sceneMinuteValue').value=String(value);
+        document.querySelectorAll('.mechanism-clocks .minute-hand').forEach((hand,i)=>{
+          const period=i?12:9;hand.setAttribute('transform',`rotate(${Math.floor(value/period)*period*6} 60 57)`);
+        });
+        document.querySelectorAll('[data-chime]').forEach(light=>{
+          const ringing=value>0&&value%Number(light.dataset.chime)===0;
+          light.classList.toggle('lit',ringing);light.querySelector('strong').textContent=ringing?'Chiming':'Waiting';
+        });
+        document.querySelector('.mechanism-0 .scene-discovery').classList.toggle('hidden',!s.done);
+        if(roomFlow.stage==='mechanism')document.getElementById('activityNext').disabled=!s.done;
+      }
+      save();return;
+    }
     if(index===3&&['module','light'].includes(key))s[key]=value;
     update(focusId);
   }
